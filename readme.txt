@@ -9,13 +9,13 @@ Stable tag: 6.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Lets you configure discounts/pricing rules for products based on any product taxonomy terms and WordPress user roles
+Let’s you configure discounts/pricing rules for products based on any product taxonomy terms and WordPress user roles
 
 == Description ==
 
-Lets you configure discounts/pricing rules for products based on any WooCommerce product taxonomy terms (built-in or custom), in a very simple way.
+Let’s you configure discounts/pricing rules for products based on any WooCommerce product taxonomy terms (built-in or custom), straightforwardly.
 
-The discount can be applied for all users, logged-in users, or only for certain WordPress user roles.
+The discount can be applied for all users, logged-in users, or only for specific WordPress user roles.
 
 Allows you to set a start and end date for each discount.
 
@@ -23,7 +23,7 @@ Allows you to set a start and end date for each discount.
 * Create WooCommerce discounts based on any product attribute.
 * Create WooCommerce discounts based on any custom taxonomy, like brand, for example.
 
-* WPML compatible (ability to set discounts on different languages term, not compatible with multi-currency).
+* WPML compatible (ability to set discounts on different language terms, not compatible with multi-currency).
 * WooCommerce Subscriptions experimental support.
 
 = Discount types =
@@ -40,6 +40,7 @@ Allows you to set a start and end date for each discount.
 * Replace the sale badge with a discount percentage, even if the discount is not set by a taxonomy but rather by setting a sale price on the product (in beta);
 * Show discount information (percentage and dates) on the product loop;
 * Show discount information (percentage and dates) on the product single page (mandatory on some legislations, like the Portuguese one, for example);
+* Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, thus allowing compliance with legislation, such as Portuguese law, which requires these details to be displayed next to the sale price;
 * “Stop - no discount” rule that makes sure products from specific taxonomy terms never have a discount applied, even if there are other rules that will apply for other product taxonomy terms;
 * Exclude products already on sale from the discount rule: always, or if taxonomy discount is lower, or if taxonomy discount is higher;
 * Set base price for on-sale products: sale price (discount on top of discount) or original regular price (new option);
@@ -54,9 +55,9 @@ Allows you to set a start and end date for each discount.
 
 * The discounts are applied on a “per cart line” basis (not to the sum of the products of the same taxonomy);
 * Only one rule is applied per cart line, so setting the priorities correctly is very important;
-* When aggregating product variations, the quantity will be the sum of the quantities of all the variations and the discount will be applied to all of them;
+* When aggregating product variations, the quantity will be the sum of the quantities of all the variations, and the discount will be applied to all of them;
 * For WPML users, if you want the same discounts to apply to all the languages, you must replicate the rules for each of the translations of the terms
-* You can use the `tdw_rule_add`, `tdw_rule_edit`, and `tdw_rule_delete` actions when adding, editing, and deleting rules, to do whatever you want like, for example, clearing cache ([check out to use them here](https://gist.github.com/webdados/98282475fbee2be347eba45ad81cbba5) and send us cool examples of what you’ve done)
+* You can use the `tdw_rule_add`, `tdw_rule_edit`, and `tdw_rule_delete` actions when adding, editing, and deleting rules, to do whatever you want, like, for example, clearing cache ([check out to use them here](https://gist.github.com/webdados/98282475fbee2be347eba45ad81cbba5) and send us cool examples of what you’ve done)
 
 = Other (premium) plugins =
 
@@ -75,24 +76,24 @@ Banner by [Arno Senoner](https://unsplash.com/@arnosenoner?utm_source=unsplash&u
 
 1. Use the included automatic install feature on your WordPress admin panel and search for “Taxonomy / Term based Discounts for WooCommerce”.
 2. Activate the plugin through the `Plugins` menu in WordPress
-3. Got to `Products`, `Taxonomy Discounts` to set it up
+3. Go to `Products`, `Taxonomy Discounts` to set it up
 
 == Frequently Asked Questions ==
 
 = Why is my product not showing the “Sale” badge? =
 
-We can only show the “sale” badge when we are absolutely sure the product will get a discount, no matter how many you buy.
-So, the badge is only shown for percentage base rules with no minimum quantity required.
+We can only show the “sale” badge when we are sure the product will get a discount, no matter how many you buy.
+So, the badge is shown only for percentage-based rules with no minimum quantity required.
 
-= How can I show the discount information on the product loop and page? =
+= How can I display discount information in the product loop and on the page? =
 
 You need to use the following filters:
 
 * `tdw_loop_disc_info_action` and `tdw_loop_disc_info_prio`: to set the hook and priority for the loop page and return, for example, `woocommerce_after_shop_loop_item_title` and `1`
 * `tdw_single_disc_info_action` and `tdw_single_disc_info_prio`: to set the hook and priority for the product page and return, for example, `woocommerce_single_product_summary` and `6`
-(This is for Storefront. You may have to tweak the action and priority to better match your theme.)
+(This is for Storefront. You may have to tweak the action and priority to match your theme better.)
 
-Or you can just use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
+Or you can use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
 
 = How can I replace the sale badge with the discount percentage? =
 
@@ -100,19 +101,19 @@ This only works for percentage discounts with a minimum quantity of 0 or 1, and 
 
 `add_filter( 'tdw_perc_sale_badge', '__return_true' );`
 
-Or you can just use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
+Or you can use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
 
 = How can I get the current product or variation price, with the discount applied, outside the loop? =
 
-You can use the `wctd_get_product_current_price` helper function with the product or variation object or id as the first argument.
+You can use the `wctd_get_product_current_price` helper function with the product or variation object or ID as the first argument.
 
-You can also pass the quantity as the second argument so that the calculations are made for percentage discounts with a minimum quantity higher than one or for “buy x get y free” discounts. The returned price will be the price per unit.
+You can also pass the quantity as the second argument to calculate percentage discounts with a minimum quantity greater than 1, or “buy x get y free” discounts. The returned price will be the unit price.
 
 This is still beta.
 
 = Will this work on multi-currency shops? =
 
-No. The way we store the cart item prices is not currently compatible with stores where the customer can change currency during the shopping session.
+No. The way we store cart item prices is not currently compatible with stores that allow customers to change currency during the shopping session.
 
 = Is this plugin compatible with the new WooCommerce High-Performance Order Storage? =
 
@@ -132,9 +133,9 @@ This is a free plugin. It’s our way of giving back to the wonderful WordPress 
 
 Only customers of the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) get included limited technical support.
 
-There’s a support tab on the top of this page, where you can ask the community for help. We’ll try to keep an eye on the forums but we cannot promise to answer support tickets.
+There’s a support tab at the top of this page, where you can ask the community for help. We’ll try to keep an eye on the forums, but we cannot promise to answer support tickets.
 
-If you reach us by email or any other direct contact means, we’ll assume you need, premium, and of course, paid-for support.
+If you reach us by email or any other direct contact means, we’ll assume you need premium, and of course, paid-for support.
 
 = Where do I report security vulnerabilities found in this plugin? =  
  
@@ -151,10 +152,10 @@ You can report any security bugs found in the source code of this plugin through
 == Changelog ==
 
 = 7.0 - TBA =
-* PRO show discount info for non-tax discounts
+* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 5.0: Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, allowing compliance with legislation, such as Portuguese law, which requires these details to be displayed next to the sale price - [Start date will be available on WooCommerce 1.5.0](https://github.com/woocommerce/woocommerce/issues/62130#issuecomment-3657559585)
 * [DEV] Allow PRO add-on to filter discount information even when empty, thus allowing showing discount information for non-taxonomy discounts
-* [DEV] Remove load_plugin_textdomain call is it’s no longer needed
-* tested with...
+* [DEV] Remove `load_plugin_textdomain` call is it’s no longer needed
+* [DEV] Tested up to WordPress 7.0-alpha-61379 and WooCommerce 10.4.2
 
 = 6.2 - 2025-11-28 =
 * [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 4.0: Delete sitewide discounts was not working
@@ -165,14 +166,14 @@ You can report any security bugs found in the source code of this plugin through
 * [FIX] Hook into `woocommerce_get_variation_sale_price` to return the discounted price
 * [FIX] PHP notice introduced in 6.0
 * [DEV] Improve WordPress Coding Standards
-* [DEV] Tested with WordPress 6.9-RC2-61293 and WooCommerce 10.4.0-beta.1
+* [DEV] Tested up to WordPress 6.9-RC2-61293 and WooCommerce 10.4.0-beta.1
 
 = 5.6 - 2025-05-01 =
 * [NEW] We are now called Naked Cat Plugins 😻
 * [FIX] Comparison between float and integer values was incorrect, causing several problems, including erroneous discount information on percentage discounts
 * [FIX] Deprecated: Creation of dynamic property in PHP 8.3
 * [DEV] Requires PHP 7.2, WordPress 5.8, and WooCommerce 7.1
-* [DEV] Tested with WordPress 6.8 and WooCommerce 9.8.3
+* [DEV] Tested up to WordPress 6.8 and WooCommerce 9.8.3
 
 = 5.5 - 2025-03-12 =
 * [FIX] Replace `printf` with `sprintf` in several strings to fix incorrect output
@@ -186,31 +187,31 @@ You can report any security bugs found in the source code of this plugin through
 
 = 5.3 - 2025-03-11 =
 * [FIX] Fix incorrect URLs
-* [DEV] Tested with WordPress 6.8-alpha-59497 and WooCommerce 9.5.0-rc.1
+* [DEV] Tested up to WordPress 6.8-alpha-59497 and WooCommerce 9.5.0-rc.1
 
 = 5.2 - 2024-12-09 =
 * [DEV] Start applying WordPress Coding Standards
 * [FIX] Wrong price on integration with [Feed KuantoKusta for WooCommerce](https://wordpress.org/plugins/feed-kuantokusta-for-woocommerce/)
 * [FIX] Small vulnerability only exploitable by logged-in admins and shop managers
-* [DEV] Tested with WordPress 6.8-alpha-59497 and WooCommerce 9.5.0-rc.1
+* [DEV] Tested up to WordPress 6.8-alpha-59497 and WooCommerce 9.5.0-rc.1
 
 = 5.1 - 2024-10-30 =
 * [DEV] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 3.1: License validation on websites with WPML set to have different domains per language
 * [FIX] Load text domain at the right time to avoid PHP notices on WordPress 6.7 and above
-* [DEV] Tested with WordPress 6.7-RC2-59324 and WooCommerce 9.4.0-rc.2
+* [DEV] Tested up to WordPress 6.7-RC2-59324 and WooCommerce 9.4.0-rc.2
 
 = 5.0 - 2024-08-28 =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 3.0: Two new options to exclude products on sale from the discount rule only if the taxonomy discount is lower or higher than the original discount
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 3.0: If the product is already on sale, and the rule hasn’t been excluded, option to choose if the taxonomy discount should be applied on top of the already discounted price or the original product regular price
 * [NEW] Add WooCommerce admin scripts to our settings page so we can implement tooltips on more complex options
-* [FIX] Loop in some situations when showing the "on-sale" information, which caused a fatal error
-* [TWEAK] Abstract variable product detection with `$product->has_child()` instead of `$product->is_type( 'variable' )` so that all kinds of variable products declared from other plugins are compatible
+* [FIX] Loop in some situations when showing the “on-sale” information, which caused a fatal error
+* [TWEAK] Abstract variable product detection with `$product->has_child()` instead of `$product->is_type(‘variable’)` so that all kinds of variable products declared from other plugins are compatible
 * [TWEAK] Remove filter in the cart subtotal columns as the values were not accurate. Can be reactivated by passing true to `tdw_cart_item_subtotal_information`
-* [DEV] Tested with WordPress 6.7-alpha-58943 and WooCommerce 9.3.0-beta.1
+* [DEV] Tested up to WordPress 6.7-alpha-58943 and WooCommerce 9.3.0-beta.1
 
 = 4.6 - 2024-04-23 =
 * [FIX] Discount was showing doubled on the archive and single product pages
-* [DEV] Tested with WordPress 6.6-alpha-58011 and WooCommerce 8.9.0-dev
+* [DEV] Tested up to WordPress 6.6-alpha-58011 and WooCommerce 8.9.0-dev
 
 = 4.5 - 2024-04-04 =
 * [NEW] Show subtotal price with discount on the classic cart
@@ -219,12 +220,12 @@ You can report any security bugs found in the source code of this plugin through
 * [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 2.3: Update cache button click on the backend
 * [TWEAK] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 2.3: Only show license key setting to administrators
 * [DEV] Add “Requires Plugins” header
-* [DEV] Tested with WordPress 6.6-alpha-57920 and WooCommerce 8.8.0-rc.1
+* [DEV] Tested up to WordPress 6.6-alpha-57920 and WooCommerce 8.8.0-rc.1
 
 = 4.4 - 2023-12-12 =
 * Declare WooCommerce block-based Cart and Checkout compatibility
 * Requires WordPress 5.4
-* Tested with WordPress 6.5-alpha-57159 and WooCommerce 8.4.0-rc.1
+* Tested up to WordPress 6.5-alpha-57159 and WooCommerce 8.4.0-rc.1
 
 = 4.3 - 2023-09-07 =
 * Fix a bug getting variation discounts introduced in 4.2
@@ -241,39 +242,39 @@ You can report any security bugs found in the source code of this plugin through
 = 4.0 - 2023-09-05 =
 * Performance improvement by only loading non-expired and date valid rules on the frontend
 * Performance improvement by caching our filter calls to `woocommerce_product_is_on_sale` and `woocommerce_product_get_price` - This can be disabled by passing `false to the new `tdw_enable_cache` filter or on the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
-* Tested with WordPress 6.4-alpha-56479 and WooCommerce 8.1.0-beta.1
+* Tested up to WordPress 6.4-alpha-56479 and WooCommerce 8.1.0-beta.1
 
 = 3.8.1 - 2023-07-11 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.8: Exclude products on sale from the discount rule
 * Fix translations
 * Requires WooCommerce 5.0 or above
-* Tested with WordPress 6.3-beta3-56192 and WooCommerce 7.9.0-rc.3
+* Tested up to WordPress 6.3-beta3-56192 and WooCommerce 7.9.0-rc.3
 
 = 3.8 - 2023-07-11 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.8: Exclude products on sale from the discount rule
 * Requires WooCommerce 5.0 or above
-* Tested with WordPress 6.3-beta3-56192 and WooCommerce 7.9.0-rc.3
+* Tested up to WordPress 6.3-beta3-56192 and WooCommerce 7.9.0-rc.3
 
 = 3.7 - 2023-05-29 =
 * Fixed a bug where the incorrect product price would show up on the checkout page
-* Tested with WordPress 6.3-alpha-55859 and WooCommerce 7.8.0-beta.1
+* Tested up to WordPress 6.3-alpha-55859 and WooCommerce 7.8.0-beta.1
 
 = 3.6 - 2022-11-23 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.7: “Stop - no discount” rule that makes sure products from specific taxonomy terms never have a discount applied, even if there are other rules that will apply for other product taxonomy terms
 * Code cleanup
-* Tested with WordPress 6.2-alpha-54860 and WooCommerce 7.2.0-beta.1
+* Tested up to WordPress 6.2-alpha-54860 and WooCommerce 7.2.0-beta.1
 
 = 3.5 - 2022-11-22 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.6: Disable shipping methods based on cart items applied rules
 * Visual feedback for required fields when adding new rules
-* Tested with WordPress 6.2-alpha-54860 and WooCommerce 7.1
+* Tested up to WordPress 6.2-alpha-54860 and WooCommerce 7.1
 
 = 3.4 - 2022-11-10 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.5: New rule field “title” that can be used to identify the rule in the admin area as well as being shown alongside the discount information in the frontend
 * Tested and confirmed WooCommerce HPOS compatibility
 * Fix jQuery deprecations
 * Fixed a bug when showing discount information on the product page
-* Tested with WordPress 6.2-alpha-54748 and WooCommerce 7.1
+* Tested up to WordPress 6.2-alpha-54748 and WooCommerce 7.1
 
 = 3.3.0 - 2022-10-17 =
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.4: Set maximum amount of free items when using BOGO discounts
@@ -281,7 +282,7 @@ You can report any security bugs found in the source code of this plugin through
 
 = 3.2.0 - 2022-10-07 =
 * Allow [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 1.3 to add rules for non logged in users
-* Tested with WordPress 6.1-beta3-54400 and WooCommerce 7.0.0-rc.2
+* Tested up to WordPress 6.1-beta3-54400 and WooCommerce 7.0.0-rc.2
 
 = 3.1.2 - 2022-09-19 =
 * Fix readme.txt
@@ -299,13 +300,13 @@ You can report any security bugs found in the source code of this plugin through
 * Small bug fix on the product single page discount information beta feature
 * Deprecated the `WCTD_PERC_SALE_BADGE`, `WCTD_LOOP_DISC_INFO_ACTION`, `WCTD_LOOP_DISC_INFO_PRIO`, `WCTD_PROD_DISC_INFO_ACTION`, `WCTD_PROD_DISC_INFO_PRIO` and `WCTD_ADVANCED_MODE` in favor of the new filters `tdw_perc_sale_badge`, `tdw_loop_disc_info_action`, `tdw_loop_disc_info_prio`, `tdw_single_disc_info_action`, `tdw_single_disc_info_prio` and `tdw_dev_mode`
 * Requires WooCommerce 4.0 or above
-* Tested with WordPress 6.1-alpha-53556 and WooCommerce 6.9.2
+* Tested up to WordPress 6.1-alpha-53556 and WooCommerce 6.9.2
 
 = 2.1.0 - 2022-06-29 =
 * New brand: PT Woo Plugins 🥳
 * Code refactoring and simplification when getting the applied rule to a product
 * Requires WordPress 5.0, WooCommerce 3.0 and PHP 7.0
-* Tested with WordPress 6.1-alpha-53556 and WooCommerce 6.7.0-beta.2
+* Tested up to WordPress 6.1-alpha-53556 and WooCommerce 6.7.0-beta.2
 
 = 2.0.0 - 2021-05-10 =
 * Moved the settings to Products instead of WooCommerce
@@ -314,29 +315,29 @@ You can report any security bugs found in the source code of this plugin through
 * New `wctd_get_product_applied_rule` helper function to get the product applied rule, if any
 * Added [Woocommerce Google Product Feed compatibility](https://woocommerce.com/products/google-product-feed/)
 * Code refactoring
-* Tested with WordPress 5.8-alpha-50832 and WooCommerce 5.3.0-rc.2
+* Tested up to WordPress 5.8-alpha-50832 and WooCommerce 5.3.0-rc.2
 * Relase sponsored by [Planeta Tangerina](https://www.planetatangerina.com/en/) and [SuportesTV.pt](https://suportestv.pt/)
 
 = 1.5.2 - 2021-03-10 =
-* Tested with WordPress 5.8-alpha-50516 and WooCommerce 5.1.0
+* Tested up to WordPress 5.8-alpha-50516 and WooCommerce 5.1.0
 
 = 1.5.1 =
 * Fix version number on the admin screen
 * Technical support clarification
-* Tested with WordPress 5.5-beta4-48649 and WooCommerce 4.3.1
+* Tested up to WordPress 5.5-beta4-48649 and WooCommerce 4.3.1
 
 = 1.5.0 =
 * Fixed a bug which was causing subscriptions to have an incorrect value
 * Process variable subscriptions just like regular variable products (Thanks for the heads up @snap-shot)
 * Fix product variations aggregation
-* Tested with WordPress 5.3.3-alpha-46995 and WooCommerce 3.9.0-rc.2
+* Tested up to WordPress 5.3.3-alpha-46995 and WooCommerce 3.9.0-rc.2
 
 = 1.4.8 =
 * Fixed a bug which was causing this discounted prices not to be shown on variable products (Thanks @drosendo)
 
 = 1.4.7 =
 * Fixed a bug which was causing the discounted prices not to be shown on the homepage
-* Tested with WordPress 5.3.1-alpha-46771 and WooCommerce 3.8.1
+* Tested up to WordPress 5.3.1-alpha-46771 and WooCommerce 3.8.1
 
 = 1.4.6 =
 * Fixed a bug which could cause products not on sale to show the sale badge (Thanks @drosendo)
@@ -345,23 +346,23 @@ You can report any security bugs found in the source code of this plugin through
 * Fixed a bug which was causing PHP Notices (Thanks @drosendo)
 
 = 1.4.4 =
-* Tested with WordPress 5.2.5-alpha and WooCommerce 3.8.0
+* Tested up to WordPress 5.2.5-alpha and WooCommerce 3.8.0
 
 = 1.4.3 =
 * New `tdw_custom_product_loop` that you should return true to inside your product custom loops so that the discounted price shows correctly (Thanks vinha.pt)
 * Fix version number on the plugin admin interface
-* Tested with WooCommerce 3.6.3 and WordPress 5.2.1
+* Tested up to WooCommerce 3.6.3 and WordPress 5.2.1
 
 = 1.4.2 =
 * Stop using the WooCommerce term meta helper functions
-* Tested with WooCommerce 3.6.0 RC2 and WordPress 5.1.1
+* Tested up to WooCommerce 3.6.0 RC2 and WordPress 5.1.1
 
 = 1.4.1 =
 * Fix: php notice when product prices are set with more decimals than the ones defined on WooCommerce
 
 = 1.4 =
 * New `tdw_rule_add`, `tdw_rule_edit` and `tdw_rule_delete` actions when adding, editing or deleting rules (by @onlylowercaselettersandnumbers suggestion)
-* Tested with WooCommerce 3.5.4 and WordPress 5.1
+* Tested up to WooCommerce 3.5.4 and WordPress 5.1
 
 = 1.3 =
 * New `wctd_get_product_current_price` helper function that developers can use to get the current product or variation price with the discount applied
@@ -374,7 +375,7 @@ You can report any security bugs found in the source code of this plugin through
 * Beta: If you set the `WCTD_PERC_SALE_BADGE` constant to true, the sale badge will be replaced by the discount percentage, if the minimum quantity is 0 or 1
 * Fix: when percentage discount was set for a minimum quantity of 1 and the discount was not shown on archives and single product page
 * Fix: when the product had no price a php warning was thrown
-* Tested with WooCommerce 3.5.4 and WordPress 5.1 (beta)
+* Tested up to WooCommerce 3.5.4 and WordPress 5.1 (beta)
 
 = 1.1 =
 * It’s now possible to set rules for all users, logged-in users or users belonging to specific user roles (sponsored by Amaranto Design)
@@ -384,7 +385,7 @@ You can report any security bugs found in the source code of this plugin through
 = 1.0 =
 * Now correctly shows the discount inside WooCommerce Product Shortcodes (sponsored by Amaranto Design)
 * Small admin UX tweaks
-* Tested with WooCommerce 3.5.1 and bumped `WC tested up to` tag
+* Tested up to WooCommerce 3.5.1 and bumped `WC tested up to` tag
 * Reached 1.0 for no special reason :-)
 
 = 0.9.8 =
@@ -408,7 +409,7 @@ You can report any security bugs found in the source code of this plugin through
 * Support for start and end date/time activated by default (no need to use the `WCTD_ENABLE_TIME` constant)
 
 = 0.8.1 =
-* Tested with WooCommerce 3.3
+* Tested up to WooCommerce 3.3
 * Bumped `Tested up to` tag
 
 = 0.8 =
@@ -417,7 +418,7 @@ You can report any security bugs found in the source code of this plugin through
 
 = 0.7.4 =
 * Removed the translation files from the plugin `languages` folder (the translations are now managed on WordPress.org’s GlotPress tool and will be automatically downloaded from there)
-* Tested with WooCommerce 3.2
+* Tested up to WooCommerce 3.2
 * Added `WC tested up to` tag on the plugin main file
 * Bumped `Tested up to` tag
 
@@ -454,11 +455,11 @@ You can report any security bugs found in the source code of this plugin through
 = 0.5 =
 * Increase compatibility with other plugins that manipulate the product value;
 * Stop using the $woocommerce global;
-* Tested with WordPress 4.6.1;
+* Tested up to WordPress 4.6.1;
 
 = 0.4 =
 * New `wctd_get_product_ids_on_sale` function to get the product_id of all the products that have an active discount, similar to WooCommerce’s native `wc_get_product_ids_on_sale` (to be used by developers);
-* Tested with WordPress 4.5;
+* Tested up to WordPress 4.5;
 
 = 0.3 =
 * First public release;
