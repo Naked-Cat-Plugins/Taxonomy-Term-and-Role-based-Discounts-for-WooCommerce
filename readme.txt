@@ -5,7 +5,7 @@ Tags: deals, sales, marketing, dynamic, pricing
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 6.2
+Stable tag: 7.0-beta.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -46,6 +46,7 @@ Allows you to set a start and end date for each discount.
 * Set base price for on-sale products: sale price (discount on top of discount) or original regular price (new option);
 * Disable shipping methods based on cart items applied rules;
 * Set discount rules for non-logged-in users;
+* [Google Product Feed for WooCommerce](https://automattic.pxf.io/EEJQd4) integration
 * Developer mode - [more info](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin);
 * Technical support;
 * And more to come...
@@ -155,6 +156,7 @@ You can report any security bugs found in the source code of this plugin through
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 5.0: Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, allowing compliance with legislation, such as the Portuguese law, which requires these details to be displayed next to the sale price - [Start date will be available on WooCommerce 10.5.0](https://github.com/woocommerce/woocommerce/issues/62130#issuecomment-3657559585)
 * [DEV] Allow PRO add-on to filter discount information even when empty, thus allowing showing discount information for non-taxonomy discounts
 * [DEV] Remove `load_plugin_textdomain` call as it’s no longer needed
+* [DEV] Allow PRO add-on to integrate with [Google Product Feed for WooCommerce](https://automattic.pxf.io/EEJQd4)
 * [DEV] Tested up to WordPress 7.0-alpha-61379 and WooCommerce 10.4.2
 
 = 6.2 - 2025-11-28 =
@@ -313,7 +315,7 @@ You can report any security bugs found in the source code of this plugin through
 * Fix WPML compatibility on the admin
 * If the `WCTD_ADVANCED_MODE` constant is set to true, a new “ID” field will be available for discount rules, which can be used by developers to identify a specific discount rule
 * New `wctd_get_product_applied_rule` helper function to get the product applied rule, if any
-* Added [Woocommerce Google Product Feed compatibility](https://woocommerce.com/products/google-product-feed/)
+* Added [Woocommerce Google Product Feed compatibility](https://automattic.pxf.io/EEJQd4)
 * Code refactoring
 * Tested up to WordPress 5.8-alpha-50832 and WooCommerce 5.3.0-rc.2
 * Relase sponsored by [Planeta Tangerina](https://www.planetatangerina.com/en/) and [SuportesTV.pt](https://suportestv.pt/)

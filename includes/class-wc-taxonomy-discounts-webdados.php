@@ -703,9 +703,11 @@ class WC_Taxonomy_Discounts_Webdados {
 				( isset( $GLOBALS['woocommerce_loop'] ) && isset( $GLOBALS['woocommerce_loop']['name'] ) && $GLOBALS['woocommerce_loop']['name'] === 'products' ) // General WooCommerce loop (like the homepage)
 				||
 				apply_filters( 'tdw_custom_product_loop', false )
-				||
+				// ||
+				// Not working if permalinks are enabled for this feed, for example https://wordpress.local/woocommerce_gpf/309edb4b77b4ed20/
+				// Moved to PRO add-on
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				isset( $_GET['woocommerce_gpf'] ) // WooCommerce Google Product Feed - https://woocommerce.com/products/google-product-feed/
+				// isset( $_GET['woocommerce_gpf'] ) // WooCommerce Google Product Feed - https://woocommerce.com/products/google-product-feed/
 			) {
 				if ( $this->debug ) {
 					do_action( 'qm/lap', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
