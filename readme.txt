@@ -152,7 +152,7 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
-= 7.2 - 2026-03-61 =
+= 7.2 - 2026-03-16 =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 5.1: Improve GitHub Actions and Updater
 * [DEV] Tested with WordPress 7.0-beta3-61865 and WooCommerce 10.6.0-beta.2
 
