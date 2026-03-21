@@ -128,6 +128,9 @@ class WC_Taxonomy_Discounts_Webdados {
 				$this->discount_types = apply_filters( 'tdw_discount_types', array( 'percentage', 'x-for-y' ) );
 				// Cache
 				$this->enable_cache = apply_filters( 'tdw_enable_cache', true );
+				if ( $this->debug ) {
+					do_action( 'qm/debug', 'WC_Taxonomy_Discounts_Webdados cache enabled: ' . ( $this->enable_cache ? 'yes' : 'no' ) );
+				}
 			}
 		);
 		// Flatsome?
@@ -364,9 +367,8 @@ class WC_Taxonomy_Discounts_Webdados {
 	public function wp_dropdown_categories( $args ) {
 		$return       = ! ( isset( $args['echo'] ) ? $args['echo'] : true );
 		$args['echo'] = false;
-		// self::remove_wpml_terms_filters(); // We only show the current language terms
+		// We only show the current language terms, so we don't do self::remove_wpml_terms_filters();
 		$dropdow = wp_dropdown_categories( $args );
-		// self::restore_wpml_terms_filters();
 		if ( $return ) {
 			return $dropdow;
 		} else {
@@ -673,6 +675,7 @@ class WC_Taxonomy_Discounts_Webdados {
 			if ( $this->debug ) {
 				do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 			}
+			// Issue #7 (PRO) happens here
 			return $this->cache_on_get_price[ $_product->get_id() ];
 		}
 		if ( is_numeric( $base_price ) ) {
@@ -785,27 +788,31 @@ class WC_Taxonomy_Discounts_Webdados {
 								break;
 						}
 					}
+					// We're caching here because we know that we have run the rules and they do not apply, so we won't need to run them again for this product on this page load
 					$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
 					if ( $this->debug ) {
 						do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 					}
 					return $base_price;
 				} else {
-					$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+					// No rules - We should not cache if we're not touching the price
+					// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
 					if ( $this->debug ) {
 						do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 					}
 					return $base_price;
 				}
 			} else {
-				$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+				// Conditions do not apply - Issue #7 (PRO) happens here - We should not cache if we're not touching the price
+				// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
 				if ( $this->debug ) {
 					do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 				}
 				return $base_price;
 			}
 		} else {
-			$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+			// Not numberic - We should not cache if we're not touching the price
+			// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
 			if ( $this->debug ) {
 				do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 			}
@@ -974,16 +981,16 @@ class WC_Taxonomy_Discounts_Webdados {
 													);
 												}
 											} elseif ( isset( $rule['value'] ) && is_numeric( $rule['value'] ) && floatval( $rule['value'] ) > 0 && $cart_item['quantity'] >= floatval( $rule['min-qtt'] ) ) {
-													$discount_price              = $base_price - ( $base_price * ( floatval( $rule['value'] ) / 100 ) );
-													$discount_price_over_regular = (float) $_product->get_regular_price() - ( (float) $_product->get_regular_price() * ( floatval( $rule['value'] ) / 100 ) );
-													$filtered_discount_price     = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
-													// Pro is setting for the discount to be on top or regular and not sale?
-												if ( $filtered_discount_price != $discount_price && $filtered_discount_price == $discount_price_over_regular ) { // We need to check these != and == for strict comparison
+												$discount_price              = $base_price - ( $base_price * ( floatval( $rule['value'] ) / 100 ) );
+												$discount_price_over_regular = (float) $_product->get_regular_price() - ( (float) $_product->get_regular_price() * ( floatval( $rule['value'] ) / 100 ) );
+												$filtered_discount_price     = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
+												// Pro is setting for the discount to be on top or regular and not sale?
+												if ( floatval( $filtered_discount_price ) !== floatval( $discount_price ) && floatval( $filtered_discount_price ) === floatval( $discount_price_over_regular ) ) { // We need to check these != and == for strict comparison - Changed on 2026-03-21
 													$discount_price = $filtered_discount_price;
 													$base_price     = $_product->get_regular_price();
 													$display_price  = $base_price;
 												}
-													$discount_display_price = $display_price - ( $display_price * ( floatval( $rule['value'] ) / 100 ) );
+												$discount_display_price = $display_price - ( $display_price * ( floatval( $rule['value'] ) / 100 ) );
 											}
 											break;
 										case 'x-for-y':
@@ -995,7 +1002,7 @@ class WC_Taxonomy_Discounts_Webdados {
 													$discount_price_over_regular = ( ( (float) $_product->get_regular_price() * $cart_item['quantity'] ) - ( (float) $_product->get_regular_price() * $qtt_discounted ) ) / $cart_item['quantity'];
 													$filtered_discount_price     = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
 													// Pro is setting for the discount to be on top or regular and not sale?
-													if ( $filtered_discount_price != $discount_price && $filtered_discount_price == $discount_price_over_regular ) { // We need to check these != and == for strict comparison
+													if ( floatval( $filtered_discount_price ) !== floatval( $discount_price ) && floatval( $filtered_discount_price ) === floatval( $discount_price_over_regular ) ) { // We need to check these != and == for strict comparison - Changed on 2026-03-21
 														$discount_price = $filtered_discount_price;
 														$base_price     = $_product->get_regular_price();
 														$display_price  = $base_price;
