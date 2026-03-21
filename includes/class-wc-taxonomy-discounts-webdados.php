@@ -87,6 +87,8 @@ class WC_Taxonomy_Discounts_Webdados {
 				add_action( 'admin_enqueue_scripts', array( &$this, 'admin_css_js' ) );
 				// Add our screen to WooCommerce admin screens so we get the tooltips
 				add_action( 'woocommerce_screen_ids', array( &$this, 'woocommerce_screen_ids' ) );
+				// Add the settings link on the plugins page
+				add_filter( 'plugin_action_links_' . plugin_basename( WCTD_FREE_PLUGIN_FILE ), array( &$this, 'add_settings_link' ) );
 			}
 			// Ajax calls
 			add_action( 'wp_ajax_tdw_form_add_choose_taxonomy', array( &$this, 'ajax_form_add_choose_taxonomy' ) );
@@ -255,6 +257,19 @@ class WC_Taxonomy_Discounts_Webdados {
 	public function woocommerce_screen_ids( $screen_ids ) {
 		$screen_ids[] = 'product_page_wc_taxonomy_discounts_webdados';
 		return $screen_ids;
+	}
+
+	/**
+	 * Add settings link on the plugins page
+	 *
+	 * @param array $links The existing plugin action links.
+	 * @return array       Modified array of plugin action links with our settings link added.
+	 */
+	public function add_settings_link( $links ) {
+		$action_links = array(
+			'<a href="' . admin_url( 'edit.php?post_type=product&page=wc_taxonomy_discounts_webdados' ) . '">' . esc_html__( 'Settings and discount configuration', 'taxonomy-discounts-woocommerce' ) . '</a>',
+		);
+		return array_merge( $links, $action_links );
 	}
 
 	/**
