@@ -1225,8 +1225,24 @@ class WC_Taxonomy_Discounts_Webdados {
 															$discount_display_price = $display_price;
 															// Discount - We're assuming it's only percentage!!
 															// MISSING - FIX FOR AGGREFATE VARIATIONS FOR OTHER TYPES OF DISCOUNTS - PRO SHOULD HANDLE THIS
-															$discount_price         = $base_price - ( $base_price * ( floatval( $rule['value'] ) / 100 ) );
-															$discount_display_price = $display_price - ( $display_price * ( floatval( $rule['value'] ) / 100 ) );
+															
+															switch ( $rule['type'] ) {
+																case 'percentage':
+																	$discount_price         = $base_price - ( $base_price * ( floatval( $rule['value'] ) / 100 ) );
+																	$discount_display_price = $display_price - ( $display_price * ( floatval( $rule['value'] ) / 100 ) );
+																	break;
+																case 'x-for-y':
+																	// Not allowed for aggregate variations - We should never get here because of the if condition above, but just in case
+																	break;
+																default:
+																	// The pro should return false or an array with discount_price and discount_price_over_regular
+																	$non_default_discount_price = apply_filters( 'tdw_on_calculate_totals_non_default_rule_aggregate_variation_price', false, $rule, $base_price, $display_price );
+																	if ( $non_default_discount_price ) {
+																		$discount_price         = $non_default_discount_price['discount_price'];
+																		$discount_display_price = $non_default_discount_price['discount_display_price'];
+																	}
+																	break;
+															}
 															if (
 																$discount_price < $base_price
 																&&
