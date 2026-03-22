@@ -30,6 +30,7 @@ Allows you to set a start and end date for each discount.
 
 * Percentage: apply an absolute percentage discount to all the products on a specific taxonomy term;
 * Buy x get y free (BOGO): offer y items when x (of the same product) are bought;
+* [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) Fixed value: apply an absolute value discount to all the products on a specific taxonomy term;
 
 = Get more with the PRO add-on =
 
@@ -152,9 +153,21 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
+= 8.0 - TBA =
+* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 8.0: FIXED -> MISSING!!!!!!!!!!!!!!!!!!!!!
+* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 8.0: Log and show the last user that edited a rule
+* [TWEAK] Show helper for the “Aggregate variations” field
+* [FIX] Subtotal on classic cart was not correct in some scenarios
+* [FIX] Discount would not show up for products already in cart in some scenarios
+* [FIX] Several fixes regarding variations
+* [DEV] Add “Settings and discount configuration” link to the actions on the plugins page
+* [DEV] Code cleanup and Improve WordPress Coding Standards
+* [DEV] Remove closing slash from void elements
+* [DEV] Tested up to WordPress 7.0-beta6-62086 and WooCommerce 10.6.1
+
 = 7.2 - 2026-03-16 =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 5.1: Improve GitHub Actions and Updater
-* [DEV] Tested with WordPress 7.0-beta3-61865 and WooCommerce 10.6.0-beta.2
+* [DEV] Tested up to WordPress 7.0-beta3-61865 and WooCommerce 10.6.0-beta.2
 
 = 7.1 - 2026-01-01 =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 5.0: Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, allowing compliance with legislation, such as the Portuguese law, which requires these details to be displayed next to the sale price - [Start date will be available on WooCommerce 10.5.0](https://github.com/woocommerce/woocommerce/issues/62130#issuecomment-3657559585)
