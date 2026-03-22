@@ -5,7 +5,7 @@ Tags: deals, sales, marketing, dynamic, pricing
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.2
-Stable tag: 7.2
+Stable tag: 8.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -153,9 +153,9 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
-= 8.0 - TBA =
-* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 8.0: FIXED -> MISSING!!!!!!!!!!!!!!!!!!!!!
-* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 8.0: Log and show the last user that edited a rule
+= 8.0 - 2026-03-22 =
+* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.0: New discount type: Fixed value
+* [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.0: Log and show the last user that edited a rule
 * [TWEAK] Show helper for the “Aggregate variations” field
 * [TWEAK] Link to each term public archive in the rules table
 * [FIX] Subtotal on classic cart was not correct in some scenarios
