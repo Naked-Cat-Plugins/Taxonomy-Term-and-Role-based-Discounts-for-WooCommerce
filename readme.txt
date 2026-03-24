@@ -156,6 +156,7 @@ You can report any security bugs found in the source code of this plugin through
 = 8.1 - TBA =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.2: Add discount to multiple terms at the same time
 * [TWEAK] Show discount type description helper when adding a discount
+* [FIX] Sitewide discounts from the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) were not correctly applied on the cart
 * [FIX] Show percentage on the product sale badge block
 * [FIX] Reset the add new rule form after each interaction
 * [DEV] New `tdw_form_add_data_before_save` and `tdw_form_edit_data_before_save` filters to allow the PRO Add-on or 3rd Party developers to manipulate the rule data before it is saved to term meta

@@ -717,12 +717,7 @@ class WC_Taxonomy_Discounts_Webdados {
 					foreach ( $terms as $term_id => $rules ) {
 						foreach ( $rules as $rule_key => $rule ) {
 							if ( WC_Taxonomy_Discounts_Webdados()->valid_rule_user_role( $rule ) && WC_Taxonomy_Discounts_Webdados()->valid_rule_date( $rule ) && isset( $rule['type'] ) ) {
-								if (
-									has_term( $term_id, $rule['taxonomy'], $product_id )
-									||
-									// Allow PRO add-on or other plugins to extend the has_term check and return valid even if the product does not have the term
-									apply_filters( 'tdw_has_term_or_valid', false, has_term( $term_id, $rule['taxonomy'], $product_id ), $term_id, $rule['taxonomy'], $product_id )
-								) {
+								if ( $this->has_term( $term_id, $rule['taxonomy'], $product_id ) ) {
 									return apply_filters( 'tdw_get_product_applied_rule', $rule, $product );
 								}
 							}
@@ -732,6 +727,31 @@ class WC_Taxonomy_Discounts_Webdados {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if a product has a specific term in a taxonomy or if the term is considered valid for the product by external filters
+	 * For example, sitewide discounts
+	 *
+	 * @param int    $term_id    The term ID to check.
+	 * @param string $taxonomy   The taxonomy name to check the term in.
+	 * @param int    $product_id The product ID to check the term against.
+	 * @return boolean
+	 */
+	private function has_term( $term_id, $taxonomy, $product_id ) {
+		return (
+			has_term( $term_id, $taxonomy, $product_id )
+			||
+			// Allow PRO add-on or other plugins to extend the has_term check and return valid even if the product does not have the term
+			apply_filters(
+				'tdw_has_term_or_valid',
+				false,
+				has_term( $term_id, $taxonomy, $product_id ),
+				$term_id,
+				$taxonomy,
+				$product_id
+			)
+		);
 	}
 
 	/**
@@ -1063,7 +1083,7 @@ class WC_Taxonomy_Discounts_Webdados {
 									&&
 									isset( $rule['type'] )
 									&&
-									has_term( $term_id, $rule['taxonomy'], $cart_item['product_id'] )
+									$this->has_term( $term_id, $rule['taxonomy'], $cart_item['product_id'] )
 									&&
 									! in_array( (int) $cart_item['product_id'], $this->cache_do_not_apply_discount, true ) // Fix on sale removal
 								) {
@@ -1401,7 +1421,7 @@ class WC_Taxonomy_Discounts_Webdados {
 				foreach ( $discount_rules as $priority => $terms ) { // We cannot use the helper here
 					foreach ( $terms as $term_id => $rules ) {
 						foreach ( $rules as $rule_key => $rule ) {
-							if ( self::valid_rule_user_role( $rule ) && self::valid_rule_date( $rule ) && isset( $rule['type'] ) && has_term( $term_id, $rule['taxonomy'], $product_id ) ) {
+							if ( self::valid_rule_user_role( $rule ) && self::valid_rule_date( $rule ) && isset( $rule['type'] ) && $this->has_term( $term_id, $rule['taxonomy'], $product_id ) ) {
 								switch ( $rule['type'] ) {
 									case 'percentage':
 										if ( isset( $rule['value'] ) && is_numeric( $rule['value'] ) && $rule['value'] > 0 ) {
