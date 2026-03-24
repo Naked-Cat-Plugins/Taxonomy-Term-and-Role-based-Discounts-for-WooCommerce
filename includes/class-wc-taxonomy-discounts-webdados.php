@@ -172,7 +172,10 @@ class WC_Taxonomy_Discounts_Webdados {
 			||
 			apply_filters( 'tdw_perc_sale_badge', false )
 		) {
+			// Classic
 			add_filter( 'woocommerce_sale_flash', array( &$this, 'woocommerce_sale_flash' ), 10, 3 );
+			// Blocks
+			add_filter( 'woocommerce_sale_badge_text', array( &$this, 'woocommerce_sale_badge_text' ), 10, 2 );
 		}
 		// Show discount information on the loop
 		$wctd_loop_disc_info_action = '';
@@ -1731,12 +1734,13 @@ class WC_Taxonomy_Discounts_Webdados {
 	 *
 	 * Modifies the WooCommerce sale badge to display the actual discount percentage
 	 *
-	 * @param string     $html    The original sale badge HTML.
-	 * @param WP_Post    $post    The product post object.
-	 * @param WC_Product $product The product object.
+	 * @param string     $html      The original sale badge HTML.
+	 * @param WP_Post    $post      The product post object.
+	 * @param WC_Product $product   The product object.
+	 * @param bool       $only_text Whether to return only text (for blocks) or full HTML.
 	 * @return string             Modified sale badge HTML with percentage or original HTML.
 	 */
-	public function woocommerce_sale_flash( $html, $post, $product ) {
+	public function woocommerce_sale_flash( $html, $post, $product, $only_text = false ) {
 		$new_html = false;
 		$rule     = self::get_product_applied_rule( $product );
 		if ( ( ! empty( $rule ) ) && apply_filters( 'tdw_perc_sale_badge_' . $product->get_id(), true ) ) {
@@ -1745,7 +1749,7 @@ class WC_Taxonomy_Discounts_Webdados {
 					if ( isset( $rule['value'] ) && is_numeric( $rule['value'] ) && $rule['value'] > 0 ) {
 						$found = true;
 						if ( floatval( $rule['min-qtt'] ) === (float) 0 || floatval( $rule['min-qtt'] ) === (float) 1 ) {
-							$new_html = sprintf( '-%d&percnt;', intval( $rule['value'] ) );
+							$new_html = sprintf( '-%d%%', intval( $rule['value'] ) );
 						}
 						// We need to keep it short
 						// else {
@@ -1767,7 +1771,9 @@ class WC_Taxonomy_Discounts_Webdados {
 		}
 		$new_html = apply_filters( 'tdw_perc_sale_badge_html', $new_html, $product, $rule );
 		if ( $new_html ) {
-			if ( $this->flatsome_active ) {
+			if ( $only_text ) {
+				$html = $new_html;
+			} elseif ( $this->flatsome_active ) {
 				$search = '/(<span class="onsale">).*?(<\/span>)/';
 				$html   = preg_replace( $search, '<span class="onsale">' . $new_html . '</span>', $html );
 			} else {
@@ -1775,6 +1781,19 @@ class WC_Taxonomy_Discounts_Webdados {
 			}
 		}
 		return $html;
+	}
+
+	/**
+	 * Customize sale badge text for blocks
+	 *
+	 * Modifies the sale badge text when only text is requested (e.g. for Gutenberg blocks) to show discount percentage
+	 *
+	 * @param string     $text    The original sale badge text.
+	 * @param WC_Product $product The product object.
+	 * @return string             Modified sale badge text with percentage or original text.
+	 */
+	public function woocommerce_sale_badge_text( $text, $product ) {
+		return $this->woocommerce_sale_flash( $text, null, $product, true );
 	}
 
 	/**
@@ -1954,7 +1973,7 @@ class WC_Taxonomy_Discounts_Webdados {
 										wc_help_tip(
 											sprintf(
 												/* translators: %1$s: strong open tag, %2$s: Aggregate variations, %3$s: strong close tag */
-												__( '%1$s%2$s%3$s: if enabled, the quantity will be the sum of all the variations of a product.', 'taxonomy-discounts-woocommerce' ),
+												__( '%1$s%2$s%3$s: if enabled, the quantity will be the sum of all the variations of a product in the cart.', 'taxonomy-discounts-woocommerce' ),
 												'<strong>',
 												__( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ),
 												'</strong>'

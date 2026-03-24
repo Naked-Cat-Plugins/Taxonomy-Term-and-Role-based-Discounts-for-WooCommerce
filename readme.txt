@@ -153,6 +153,9 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
+= 8.1 - TBA =
+* [FIX] Show percentage on the product sale badge block
+
 = 8.0 - 2026-03-22 =
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.0: New discount type: Fixed value
 * [NEW] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.0: Log and show the last user that edited a rule
