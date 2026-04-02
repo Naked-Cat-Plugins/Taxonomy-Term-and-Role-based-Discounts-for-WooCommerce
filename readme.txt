@@ -55,9 +55,9 @@ Allows you to set a start and end date for each discount.
 
 = Notes =
 
-* The discounts are applied on a “per cart line” basis (not to the sum of the products of the same taxonomy);
+* The discounts are applied on a “per cart line” basis (not to the sum of the products of the same taxonomy) - this means that if you set a discount with a minimum quantity, it will only be applied if the customer buys that quantity of the same product;
 * Only one rule is applied per cart line, so setting the priorities correctly is very important;
-* When aggregating product variations, the quantity will be the sum of the quantities of all the variations, and the discount will be applied to all of them;
+* When aggregating product variations, the quantity will be the sum of the quantities of all the variations of the same product in the cart, and the discount will be applied to all of them;
 * For WPML users, if you want the same discounts to apply to all the languages, you must replicate the rules for each of the translations of the terms
 * You can use the `tdw_rule_add`, `tdw_rule_edit`, and `tdw_rule_delete` actions when adding, editing, and deleting rules, to do whatever you want, like, for example, clearing cache ([check out to use them here](https://gist.github.com/webdados/98282475fbee2be347eba45ad81cbba5) and send us cool examples of what you’ve done)
 
