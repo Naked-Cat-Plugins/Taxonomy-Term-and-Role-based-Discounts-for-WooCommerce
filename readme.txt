@@ -1,7 +1,7 @@
-=== Taxonomy/Term and Role based Discounts for WooCommerce ===
+=== Taxonomy/Term and Role-based Discounts for WooCommerce ===
 Contributors: nakedcatplugins, webdados
 Donate link: https://www.paypal.me/Wonderm00n
-Tags: deals, sales, marketing, dynamic, pricing
+Tags: discount, bulk discount, category discount, role-based pricing, woocommerce discount
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.2
@@ -9,27 +9,26 @@ Stable tag: 8.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Let’s you configure discounts/pricing rules for products based on any product taxonomy terms and WordPress user roles
+Automatically apply WooCommerce discounts/pricing rules based on product category, tag, attribute, custom taxonomy, and user role — no coupons needed
 
 == Description ==
 
-Let’s you configure discounts/pricing rules for products based on any WooCommerce product taxonomy terms (built-in or custom), straightforwardly.
+Create automatic WooCommerce price discounts based on product category, tag, attribute, brand, or any custom taxonomy, and apply them to all users, logged-in users, or only to specific WordPress user roles.
 
-The discount can be applied for all users, logged-in users, or only for specific WordPress user roles.
+Each discount rule can have a start and end date.
 
-Allows you to set a start and end date for each discount.
-
-* Create WooCommerce discounts based on the product category, tag, type, or shipping class.
-* Create WooCommerce discounts based on any product attribute.
-* Create WooCommerce discounts based on any custom taxonomy, like brand, for example.
-
-* WPML compatible (ability to set discounts on different language terms, not compatible with multi-currency).
-* WooCommerce Subscriptions experimental support.
+* Create WooCommerce discounts based on the product category, tag, brand, type, or shipping class;
+* Create WooCommerce discounts based on any product attribute;
+* Create WooCommerce discounts based on any custom taxonomy, created by you or any 3rd party plugin;
+* Create WooCommerce discounts based on the user role;
+* Schedule the special pricing by setting a date range on the discount rule;
+* WPML compatible (ability to set discounts on different language terms, not compatible with multi-currency);
+* WooCommerce Subscriptions experimental support;
 
 = Discount types =
 
 * Percentage: apply an absolute percentage discount to all the products on a specific taxonomy term;
-* Buy x get y free (BOGO): offer y items when x (of the same product) are bought;
+* Buy x get y free (BOGO): offer free items when a minimum quantity is purchased;
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) Fixed value: apply an absolute value discount to all the products on a specific taxonomy term;
 
 = Get more with the PRO add-on =
@@ -38,7 +37,7 @@ Allows you to set a start and end date for each discount.
 * Sitewide discounts: any discount type applied to all the store products, instead of just one taxonomy term
 * Set the maximum amount of free items when using BOGO discounts;
 * Replace the sale badge with a discount percentage;
-* Replace the sale badge with a discount percentage, even if the discount is not set by a taxonomy but rather by setting a sale price on the product (in beta);
+* Replace the sale badge with a discount percentage, even if a taxonomy does not set the discount, but rather by setting a sale price on the product (in beta);
 * Show discount information (percentage and dates) on the product loop;
 * Show discount information (percentage and dates) on the product single page (mandatory on some legislations, like the Portuguese one, for example);
 * Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, thus allowing compliance with legislation, such as Portuguese law, which requires these details to be displayed next to the sale price;
@@ -70,22 +69,42 @@ Already know our other WooCommerce (premium) plugins?
 * [Simple WooCommerce Order Approval](https://nakedcatplugins.com/product/simple-woocommerce-order-approval/) - The hassle-free solution for WooCommerce order approval before payment
 * [Shop as Client for WooCommerce](https://nakedcatplugins.com/product/shop-as-client-for-woocommerce-pro-add-on/) - Quickly create orders on behalf of your customers
 * [DPD / SEUR / Geopost Pickup and Lockers network for WooCommerce](https://nakedcatplugins.com/product/dpd-seur-geopost-pickup-and-lockers-network-for-woocommerce/) - Deliver your WooCommerce orders on the DPD and SEUR Pickup network of Parcelshops and Lockers in 21 European countries
-* [Taxonomy/Term and Role based Discounts for WooCommerce](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/) - Easily create bulk discount rules for products based on any taxonomy terms (built-in or custom)
+
 
 Banner by [Arno Senoner](https://unsplash.com/@arnosenoner?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 
 == Installation ==
 
-1. Use the included automatic install feature on your WordPress admin panel and search for “Taxonomy / Term based Discounts for WooCommerce”.
+1. Use the included automatic install feature on your WordPress admin panel and search for “taxonomy/term role discounts”.
 2. Activate the plugin through the `Plugins` menu in WordPress
 3. Go to `Products`, `Taxonomy Discounts` to set it up
 
 == Frequently Asked Questions ==
 
+= Does this plugin apply discounts automatically without coupons? =
+
+Yes. Discounts are applied automatically at cart/checkout based on the product’s taxonomy terms and the customer’s user role — no coupon code is required.
+
+= Can I set bulk discounts or quantity-based pricing in WooCommerce? =
+
+Yes. You can set a minimum quantity per rule, enabling bulk or tiered pricing for product categories, tags, or any other taxonomy.
+Keep in mind the quantity is per individual product in the cart, not all products from the same taxonomy.
+
+= Can I set different prices for wholesale customers? =
+
+Yes. By combining taxonomy rules with WordPress user roles (e.g., a “Wholesale” role), you can create role-based or wholesale pricing rules.
+
 = Why is my product not showing the “Sale” badge? =
 
-We can only show the “sale” badge when we are sure the product will get a discount, no matter how many you buy.
-So, the badge is shown only for percentage-based rules with no minimum quantity required.
+We can only show the “sale” badge when we are sure the product will get a discount, no matter how many you buy. The badge is shown only for percentage-based rules with no minimum quantity required.
+
+= How can I replace the sale badge with the discount percentage? =
+
+This only works for percentage discounts with a minimum quantity of 0 or 1, and you need to add this to your (child-)theme functions.php file:
+
+`add_filter( 'tdw_perc_sale_badge', '__return_true' );`
+
+Or you can use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
 
 = How can I display discount information in the product loop and on the page? =
 
@@ -94,14 +113,6 @@ You need to use the following filters:
 * `tdw_loop_disc_info_action` and `tdw_loop_disc_info_prio`: to set the hook and priority for the loop page and return, for example, `woocommerce_after_shop_loop_item_title` and `1`
 * `tdw_single_disc_info_action` and `tdw_single_disc_info_prio`: to set the hook and priority for the product page and return, for example, `woocommerce_single_product_summary` and `6`
 (This is for Storefront. You may have to tweak the action and priority to match your theme better.)
-
-Or you can use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
-
-= How can I replace the sale badge with the discount percentage? =
-
-This only works for percentage discounts with a minimum quantity of 0 or 1, and you need to add this to your (child-)theme functions.php file:
-
-`add_filter( 'tdw_perc_sale_badge', '__return_true' );`
 
 Or you can use the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin)
 
@@ -125,10 +136,6 @@ Yes.
 
 Yes.
 
-= Can I contribute with a translation? =
-
-Sure. Go to [GlotPress](https://translate.wordpress.org/projects/wp-plugins/taxonomy-discounts-woocommerce) and help us out.
-
 = I need help, can I get technical support? =
 
 This is a free plugin. It’s our way of giving back to the wonderful WordPress community.
@@ -137,7 +144,14 @@ Only customers of the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-
 
 There’s a support tab at the top of this page, where you can ask the community for help. We’ll try to keep an eye on the forums, but we cannot promise to answer support tickets.
 
-If you reach us by email or any other direct contact means, we’ll assume you need premium, and of course, paid-for support.
+If you reach us by email or any other direct contact method, we’ll assume you need premium, paid-for support.
+
+= Can I contribute to this plugin? =
+Yes, on the [GitHub repository](https://github.com/webdados/Taxonomy-Term-and-Role-based-Discounts-for-WooCommerce).
+
+= Can I contribute with a translation? =
+
+Sure. Go to [GlotPress](https://translate.wordpress.org/projects/wp-plugins/taxonomy-discounts-woocommerce) and help us out.
 
 = Where do I report security vulnerabilities found in this plugin? =  
  
@@ -146,7 +160,7 @@ You can report any security bugs found in the source code of this plugin through
 == Screenshots ==
 
 1. Apply discounts based on any product taxonomy
-2. Set discount rules based on taxonomy/term, role, quantity, and dates. Specify percentage or BOGO discount.
+2. Add a discount rule: select taxonomy term, user role, minimum quantity, date range, and discount type (percentage or BOGO)
 3. PRO add-on settings
 4. Show discount information, including dates on the product loop (available with the PRO add-on)
 5. Show discount information, including dates on the product page (available with the PRO add-on)

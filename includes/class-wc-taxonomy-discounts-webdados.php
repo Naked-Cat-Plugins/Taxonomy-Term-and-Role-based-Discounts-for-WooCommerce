@@ -224,7 +224,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		if ( current_user_can( 'manage_woocommerce' ) ) {
 			$slug = add_submenu_page(
 				'edit.php?post_type=product',
-				__( 'Taxonomy/Term and Role based Discounts for WooCommerce', 'taxonomy-discounts-woocommerce' ),
+				__( 'Taxonomy/Term and Role-based Discounts for WooCommerce', 'taxonomy-discounts-woocommerce' ),
 				__( 'Taxonomy Discounts', 'taxonomy-discounts-woocommerce' ),
 				'manage_woocommerce',
 				'wc_taxonomy_discounts_webdados',
@@ -785,6 +785,22 @@ class WC_Taxonomy_Discounts_Webdados {
 			global $woocommerce_loop;
 			$on_woocommerce_loop = $woocommerce_loop && $woocommerce_loop['name'] !== '';
 			*/
+			/*if ( current_user_can( 'manage_options' ) ) {
+				var_dump(
+					is_product(),
+					is_shop(),
+					is_product_category(),
+					is_product_tag(),
+					is_product_taxonomy(),
+					$force_calculation,
+					$composite_ajax,
+					( isset( $GLOBALS['woocommerce_loop'] ) && isset( $GLOBALS['woocommerce_loop']['name'] ) && $GLOBALS['woocommerce_loop']['name'] === 'product' && isset( $GLOBALS['woocommerce_loop']['is_shortcode'] ) && $GLOBALS['woocommerce_loop']['is_shortcode'] === true ),
+					( isset( $GLOBALS['woocommerce_loop'] ) && isset( $GLOBALS['woocommerce_loop']['name'] ) && $GLOBALS['woocommerce_loop']['name'] === 'products' ),
+					apply_filters( 'tdw_custom_product_loop', false ),
+					$GLOBALS['woocommerce_loop']
+				);
+			}*/
+
 			if (
 				is_product() // Product page
 				||
@@ -1851,7 +1867,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		<div class="wrap woocommerce tdw">
 
 			<h1>
-				<?php esc_html_e( 'Taxonomy/Term and Role based Discounts for WooCommerce', 'taxonomy-discounts-woocommerce' ); ?> <?php echo esc_html( $this->version ); ?>
+				<?php esc_html_e( 'Taxonomy/Term and Role-based Discounts for WooCommerce', 'taxonomy-discounts-woocommerce' ); ?> <?php echo esc_html( $this->version ); ?>
 				<?php do_action( 'tdw_admin_after_title' ); ?>
 			</h1>
 

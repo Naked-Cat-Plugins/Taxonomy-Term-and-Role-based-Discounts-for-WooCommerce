@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:          Taxonomy/Term and Role based Discounts for WooCommerce
- * Description:          "Taxonomy/Term based Discounts for WooCommerce" lets you configure discount/pricing rules for products based on any product taxonomy terms and WordPress user roles
+ * Plugin Name:          Taxonomy/Term and Role-based Discounts for WooCommerce
+ * Description:          Automatically apply WooCommerce discounts/pricing rules based on product category, tag, attribute, custom taxonomy, and user role — no coupons needed
  * Version:              8.1
  * Author:               Naked Cat Plugins (by Webdados)
  * Author URI:           https://nakedcatplugins.com
@@ -57,7 +57,7 @@ function wctd_init_no_woocommerce() {
 	?>
 	<div id="message" class="error">
 		<p>
-			<?php echo wp_kses_post( __( '<strong>Taxonomy/Term and Role based Discounts for WooCommerce</strong> is enabled but not effective. It requires <strong>WooCommerce</strong> in order to work.', 'taxonomy-discounts-woocommerce' ) ); ?>
+			<?php echo wp_kses_post( __( '<strong>Taxonomy/Term and Role-based Discounts for WooCommerce</strong> is enabled but not effective. It requires <strong>WooCommerce</strong> in order to work.', 'taxonomy-discounts-woocommerce' ) ); ?>
 		</p>
 	</div>
 	<?php
