@@ -1626,23 +1626,26 @@ class WC_Taxonomy_Discounts_Webdados {
 				// No Applied rule or Applied rule that does NOT allow discount to zero
 				( ! $applied_rule || ( is_array( $applied_rule ) && ! $applied_rule['allows-discount-to-zero'] ) )
 			) {
+				$is_on_sale = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
 				$this->cache_on_sale[ $product->get_id() ] = $is_on_sale; // Set cache
 				if ( $this->debug ) {
 					do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
 				}
 				return $is_on_sale;
 			} else {
+				// Why are we not setting the cache here?
 				$is_on_sale = wc_format_decimal( $regular_price, wc_get_price_decimals() ) > wc_format_decimal( $discount_price, wc_get_price_decimals() );
 			}
 			if ( $this->debug ) {
 				do_action( 'qm/lap', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
 			}
 		}
+		$is_on_sale = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
 		$this->cache_on_sale[ $product->get_id() ] = $is_on_sale; // Set cache
 		if ( $this->debug ) {
 			do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
 		}
-		return apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
+		return $is_on_sale;
 	}
 
 	/**
