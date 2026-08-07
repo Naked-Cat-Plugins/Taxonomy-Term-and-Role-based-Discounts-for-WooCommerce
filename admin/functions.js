@@ -61,6 +61,12 @@ jQuery( document ).ready(
 							if ( response.indexOf( '<!-- No taxonomy -->' ) !== -1 ) {
 								$( '#tdw-form-add-choose-term' ).hide();
 								tdw_form_add_term();
+								// Nothing to choose here, move on to the next step
+								$( '#tdw-form-add-role' ).trigger( 'focus' );
+							} else {
+								// Move focus straight to the term select injected via AJAX, so tabbing away from
+								// the taxonomy select doesn't land the user somewhere unrelated while it loads
+								$( '#tdw-form-add-term' ).trigger( 'focus' );
 							}
 						}
 					);
