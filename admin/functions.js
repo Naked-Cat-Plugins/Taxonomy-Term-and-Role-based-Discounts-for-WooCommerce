@@ -12,6 +12,9 @@ jQuery( document ).ready(
 					$( this ).val( $( this ).find( 'option:first' ).val() );
 				} );
 			}
+			$( '#tdw-form-add .form-invalid' ).removeClass( 'form-invalid' );
+			$( '#tdw-form-add :input[aria-invalid]' ).removeAttr( 'aria-invalid' );
+			$( '#tdw-form-add-errors' ).text( '' );
 			$( '.tdw-edit-rule' ).hide();
 			$( '#tdw-form-add-choose-term' ).html( '' );
 			$( '#tdw-form-add-div-2' ).hide();
@@ -127,6 +130,8 @@ jQuery( document ).ready(
 			function () {
 				var add_term_val = [].concat( $( '#tdw-form-add-term' ).val() || [] );
 				$( '#tdw-form-add .form-invalid' ).removeClass( 'form-invalid' );
+				$( '#tdw-form-add :input[aria-invalid]' ).removeAttr( 'aria-invalid' );
+				$( '#tdw-form-add-errors' ).text( '' );
 				if (
 				$( '#tdw-form-add-taxonomy' ).val() != ''
 				&&
@@ -140,7 +145,7 @@ jQuery( document ).ready(
 					var $emptyFields = $fields.filter(
 						function () {
 							if ($.trim( this.value ) === "") {
-								$( '#' + this.id ).parent().addClass( 'form-invalid' );
+								$( this ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 								return true;
 							} else {
 								return false;
@@ -153,21 +158,21 @@ jQuery( document ).ready(
 						switch ($( '#tdw-form-add-type' ).val()) {
 							case 'percentage':
 								if ( parseInt( $( '#tdw-form-add-percentage-value' ).val() ) < 1 || parseInt( $( '#tdw-form-add-percentage-value' ).val() ) > 99) {
-									$( '#tdw-form-add-percentage-value' ).parent().addClass( 'form-invalid' );
+									$( '#tdw-form-add-percentage-value' ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 									go = false;
 								}
 								break;
 							case 'x-for-y':
 								if ( parseInt( $( '#tdw-form-add-x-for-y-x' ).val() ) < 1 ) {
-									$( '#tdw-form-add-x-for-y-x' ).parent().addClass( 'form-invalid' );
+									$( '#tdw-form-add-x-for-y-x' ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 									go = false;
 								}
 								if ( parseInt( $( '#tdw-form-add-x-for-y-y' ).val() ) < 1 ) {
-									$( '#tdw-form-add-x-for-y-y' ).parent().addClass( 'form-invalid' );
+									$( '#tdw-form-add-x-for-y-y' ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 									go = false;
 								}
 								if ( parseInt( $( '#tdw-form-add-x-for-y-y' ).val() ) >= parseInt( $( '#tdw-form-add-x-for-y-x' ).val() ) ) {
-									$( '#tdw-form-add-x-for-y-y' ).parent().addClass( 'form-invalid' );
+									$( '#tdw-form-add-x-for-y-y' ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 									go = false;
 								}
 								break;
@@ -182,7 +187,7 @@ jQuery( document ).ready(
 										// Clear form
 										tdw_reset_form_add( true );
 										// Update table
-										tdw_update_rules_table();
+										tdw_update_rules_table( null, tdw_admin_js.string_rule_added );
 									} else {
 										alert( 'Error' );
 										$( '#tdw-form-add' ).removeClass( 'tdw-ajax-loading' );
@@ -190,8 +195,12 @@ jQuery( document ).ready(
 								}
 							);
 						} else {
-							// console.log('validation errors');
+							$( '#tdw-form-add-errors' ).text( tdw_admin_js.string_form_validation_error );
+							$( '#tdw-form-add .form-invalid :input' ).first().trigger( 'focus' );
 						}
+					} else {
+						$( '#tdw-form-add-errors' ).text( tdw_admin_js.string_form_validation_error );
+						$emptyFields.first().trigger( 'focus' );
 					}
 				}
 				return false;
@@ -199,7 +208,7 @@ jQuery( document ).ready(
 		);
 
 		// Rules table - update
-		function tdw_update_rules_table() {
+		function tdw_update_rules_table( focusMetaId, statusMessage ) {
 			$( '#tdw-rules-table' ).addClass( 'tdw-ajax-loading' );
 			$( '#tdw-rules-table' ).load(
 				ajaxurl,
@@ -215,6 +224,15 @@ jQuery( document ).ready(
 							dateFormat : 'yy-mm-dd'
 						}
 					);
+					// Restore focus after the table markup was fully replaced
+					var $focusTarget = focusMetaId ? $( '#tdw-rules-table span.edit a[data-meta-id="' + focusMetaId + '"]' ) : $();
+					if ( ! $focusTarget.length ) {
+						$focusTarget = $( '#tdw-rules-table table' );
+					}
+					$focusTarget.trigger( 'focus' );
+					if ( statusMessage ) {
+						$( '#tdw-admin-status' ).text( statusMessage );
+					}
 				}
 			);
 		}
@@ -244,12 +262,14 @@ jQuery( document ).ready(
 			'#tdw-form-edit',
 			function () {
 				$( '#tdw-form-edit .form-invalid' ).removeClass( 'form-invalid' );
+				$( '#tdw-form-edit :input[aria-invalid]' ).removeAttr( 'aria-invalid' );
+				$( '#tdw-form-edit-errors' ).text( '' );
 				var id_meta      = $( '#tdw-edit-form-id' ).val();
 				var $fields      = $( '#tdw-form-edit :input.required:visible' );
 				var $emptyFields = $fields.filter(
 					function () {
 						if ($.trim( this.value ) === "") {
-							$( '#' + this.id ).parent().addClass( 'form-invalid' );
+							$( this ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 							return true;
 						} else {
 							return false;
@@ -262,21 +282,21 @@ jQuery( document ).ready(
 					switch ($( '#tdw-form-edit-type-' + id_meta ).val()) {
 						case 'percentage':
 							if ( parseInt( $( '#tdw-form-edit-percentage-value-' + id_meta ).val() ) < 1 || parseInt( $( '#tdw-form-edit-percentage-value-' + id_meta ).val() ) > 99) {
-								$( '#tdw-form-edit-percentage-value-' + id_meta ).parent().addClass( 'form-invalid' );
+								$( '#tdw-form-edit-percentage-value-' + id_meta ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 								go = false;
 							}
 							break;
 						case 'x-for-y':
 							if ( parseInt( $( '#tdw-form-edit-x-for-y-x-' + id_meta ).val() ) < 1 ) {
-								$( '#tdw-form-edit-x-for-y-x-' + id_meta ).parent().addClass( 'form-invalid' );
+								$( '#tdw-form-edit-x-for-y-x-' + id_meta ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 								go = false;
 							}
 							if ( parseInt( $( '#tdw-form-edit-x-for-y-y-' + id_meta ).val() ) < 1 ) {
-								$( '#tdw-form-edit-x-for-y-y-' + id_meta ).parent().addClass( 'form-invalid' );
+								$( '#tdw-form-edit-x-for-y-y-' + id_meta ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 								go = false;
 							}
 							if ( parseInt( $( '#tdw-form-edit-x-for-y-y-' + id_meta ).val() ) >= parseInt( $( '#tdw-form-edit-x-for-y-x' ).val() ) ) {
-								$( '#tdw-form-edit-x-for-y-y-' + id_meta ).parent().addClass( 'form-invalid' );
+								$( '#tdw-form-edit-x-for-y-y-' + id_meta ).attr( 'aria-invalid', 'true' ).parent().addClass( 'form-invalid' );
 								go = false;
 							}
 							break;
@@ -290,14 +310,20 @@ jQuery( document ).ready(
 							function ( response ) {
 								if ( response == '1' ) {
 									// Update table
-									tdw_update_rules_table();
+									tdw_update_rules_table( id_meta, tdw_admin_js.string_rule_updated );
 								} else {
 									alert( 'Error' );
 								}
 								$( '#tdw-form-edit' ).removeClass( 'tdw-ajax-loading' );
 							}
 						);
+					} else {
+						$( '#tdw-form-edit-errors' ).text( tdw_admin_js.string_form_validation_error );
+						$( '.tdw-edit-rule-' + id_meta + ' .form-invalid :input' ).first().trigger( 'focus' );
 					}
+				} else {
+					$( '#tdw-form-edit-errors' ).text( tdw_admin_js.string_form_validation_error );
+					$emptyFields.first().trigger( 'focus' );
 				}
 				return false;
 			}
@@ -325,7 +351,7 @@ jQuery( document ).ready(
 						function (response) {
 							if ( response == '1' ) {
 								// Update table
-								tdw_update_rules_table();
+								tdw_update_rules_table( null, tdw_admin_js.string_rule_deleted );
 							} else {
 								alert( 'Error' );
 								$( '#tdw-rules-table' ).removeClass( 'tdw-ajax-loading' );
@@ -336,14 +362,15 @@ jQuery( document ).ready(
 			}
 		);
 
-		// Rules table - delete
+		// Rules table - cancel edit
 		$( 'body' ).on(
 			'click',
 			'#tdw-rules-table span.editcancel a',
 			function (ev) {
 				ev.preventDefault();
+				var id_meta = $( this ).attr( 'data-meta-id' );
 				tdw_reset_form_add( true );
-				tdw_update_rules_table();
+				tdw_update_rules_table( id_meta );
 			}
 		);
 
