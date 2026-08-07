@@ -61,13 +61,10 @@ jQuery( document ).ready(
 							if ( response.indexOf( '<!-- No taxonomy -->' ) !== -1 ) {
 								$( '#tdw-form-add-choose-term' ).hide();
 								tdw_form_add_term();
-								// Nothing to choose here, move on to the next step
-								$( '#tdw-form-add-role' ).trigger( 'focus' );
-							} else {
-								// Move focus straight to the term select injected via AJAX, so tabbing away from
-								// the taxonomy select doesn't land the user somewhere unrelated while it loads
-								$( '#tdw-form-add-term' ).trigger( 'focus' );
 							}
+							// Announce without moving focus, so the field stays reachable via the normal
+							// tab order instead of an unrequested jump (WCAG 3.2.2 On Input)
+							$( '#tdw-admin-status' ).text( tdw_admin_js.string_term_field_available );
 						}
 					);
 				}

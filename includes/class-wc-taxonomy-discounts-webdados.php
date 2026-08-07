@@ -252,6 +252,7 @@ class WC_Taxonomy_Discounts_Webdados {
 					'string_rule_added'               => esc_html__( 'Discount rule added.', 'taxonomy-discounts-woocommerce' ),
 					'string_rule_updated'             => esc_html__( 'Discount rule updated.', 'taxonomy-discounts-woocommerce' ),
 					'string_rule_deleted'             => esc_html__( 'Discount rule deleted.', 'taxonomy-discounts-woocommerce' ),
+					'string_term_field_available'     => esc_html__( 'Term field now available.', 'taxonomy-discounts-woocommerce' ),
 				)
 			);
 			wp_localize_script( 'tdw_admin_js', 'tdw_admin_js', $localization );
