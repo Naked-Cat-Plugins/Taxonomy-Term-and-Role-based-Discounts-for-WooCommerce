@@ -2409,10 +2409,10 @@ class WC_Taxonomy_Discounts_Webdados {
 									</tr>
 									<tr id="tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="tdw-hidden tdw-edit-rule tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
 										<td>
-											<input type="number" id="tdw-form-edit-priorit-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-priority" value="<?php echo intval( $priority ); ?>" min="1" max="999" step="1" class="required" aria-required="true">
+											<input type="number" id="tdw-form-edit-priorit-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-priority" value="<?php echo intval( $priority ); ?>" min="1" max="999" step="1" class="required" aria-required="true" aria-label="<?php esc_attr_e( 'Priority', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
-											<input type="checkbox" id="tdw-form-edit-active-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-active" value="1" <?php checked( $rule['active'], 1 ); ?>>
+											<input type="checkbox" id="tdw-form-edit-active-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-active" value="1" <?php checked( $rule['active'], 1 ); ?> aria-label="<?php esc_attr_e( 'Active', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
 											<input type="hidden" id="tdw-form-edit-type-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-type" value="<?php echo esc_attr( $rule['type'] ); ?>">
@@ -2483,24 +2483,24 @@ class WC_Taxonomy_Discounts_Webdados {
 										?>
 										</td>
 										<td>
-											<input type="checkbox" id="tdw-form-edit-disable-coupon-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-disable-coupon" value="1" <?php checked( $rule['disable_coupon'], 1 ); ?>>
+											<input type="checkbox" id="tdw-form-edit-disable-coupon-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-disable-coupon" value="1" <?php checked( $rule['disable_coupon'], 1 ); ?> aria-label="<?php esc_attr_e( 'Disable coupons', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
-											<input type="text" class="tdw-date-field" id="tdw-form-edit-from-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-from" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 0, 10 ) ); ?>" maxlength="10">
+											<input type="text" class="tdw-date-field" id="tdw-form-edit-from-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-from" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 0, 10 ) ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'From date', 'taxonomy-discounts-woocommerce' ); ?>">
 											<?php
 											if ( $this->enable_time ) {
 												?>
-												<input type="text" class="tdw-time-field" name="tdw-form-edit-from-time" id="tdw-form-add-from-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="00:00:00" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 11, 19 ) ); ?>" maxlength="8">
+												<input type="text" class="tdw-time-field" name="tdw-form-edit-from-time" id="tdw-form-add-from-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="00:00:00" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 11, 19 ) ); ?>" maxlength="8" aria-label="<?php esc_attr_e( 'From time', 'taxonomy-discounts-woocommerce' ); ?>">
 												<?php
 											}
 											?>
 										</td>
 										<td>
-											<input type="text" class="tdw-date-field" id="tdw-form-edit-to-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-to" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 0, 10 ) ); ?>" maxlength="10">
+											<input type="text" class="tdw-date-field" id="tdw-form-edit-to-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-to" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 0, 10 ) ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'To date', 'taxonomy-discounts-woocommerce' ); ?>">
 											<?php
 											if ( $this->enable_time ) {
 												?>
-												<input type="text" class="tdw-time-field" name="tdw-form-edit-to-time" id="tdw-form-add-to-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="23:59:59" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 11, 19 ) ); ?>" maxlength="8">
+												<input type="text" class="tdw-time-field" name="tdw-form-edit-to-time" id="tdw-form-add-to-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="23:59:59" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 11, 19 ) ); ?>" maxlength="8" aria-label="<?php esc_attr_e( 'To time', 'taxonomy-discounts-woocommerce' ); ?>">
 												<?php
 											}
 											?>
@@ -2513,7 +2513,7 @@ class WC_Taxonomy_Discounts_Webdados {
 										) {
 											?>
 											<td>
-												<input type="text" id="tdw-form-edit-advanced-id-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-advanced-id" value="<?php echo esc_attr( isset( $rule['advanced_id'] ) ? trim( $rule['advanced_id'] ) : '' ); ?>" maxlength="10">
+												<input type="text" id="tdw-form-edit-advanced-id-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-advanced-id" value="<?php echo esc_attr( isset( $rule['advanced_id'] ) ? trim( $rule['advanced_id'] ) : '' ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'ID', 'taxonomy-discounts-woocommerce' ); ?>">
 											</td>
 										<?php } ?>
 										<td>
