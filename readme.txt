@@ -169,8 +169,8 @@ You can report any security bugs found in the source code of this plugin through
 
 = 8.4.1 - 2026-08-14 =
 * [NEW] Accessibility improvements to the discount rules table and the add/edit rule forms: proper field labels, a table caption and skip-to-form link for screen readers, clearer validation and save/delete feedback, and screen reader announcements for dynamically-loaded fields
-* [FIX] Duplicate id/name on the percentage discount's "Aggregate variations" field in the rules table's inline edit row
 * [NEW] Redirect to the settings page after activating the plugin
+* [FIX] Duplicate id/name on the percentage discount’s “Aggregate variations” field in the rules table’s inline edit row
 * [DEV] Tested up to WordPress 7.1-RC3-63235 and WooCommerce 11.0.1
 
 = 8.4 - 2026-04-29 =
