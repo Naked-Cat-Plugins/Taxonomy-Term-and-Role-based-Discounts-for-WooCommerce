@@ -7,10 +7,10 @@
  * Author URI:           https://nakedcatplugins.com
  * Text Domain:          taxonomy-discounts-woocommerce
  * Requires at least:    5.8
- * Tested up to:         7.0
+ * Tested up to:         7.1
  * Requires PHP:         7.2
  * WC requires at least: 7.1
- * WC tested up to:      10.7
+ * WC tested up to:      11.0
  * Requires Plugins:     woocommerce
  * License:              GPLv3
  */
