@@ -428,7 +428,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		}
 		$options = apply_filters( 'tdw_admin_available_user_roles', $options );
 		?>
-		<select name="tdw-form-<?php echo esc_attr( $action ); ?>-role" id="tdw-form-<?php echo esc_attr( $action ); ?>-role">
+		<select name="tdw-form-<?php echo esc_attr( $action ); ?>-role" id="tdw-form-<?php echo esc_attr( $action ); ?>-role"<?php echo 'edit' === $action ? ' aria-label="' . esc_attr__( 'User role', 'taxonomy-discounts-woocommerce' ) . '"' : ''; ?>>
 			<?php
 			foreach ( $options as $key => $temp ) {
 				?>
@@ -2273,6 +2273,8 @@ class WC_Taxonomy_Discounts_Webdados {
 									$taxonomy      = get_taxonomy( $rule['taxonomy'] );
 									$taxonomy_name = $taxonomy ? $taxonomy->labels->singular_name : '';
 									$term          = self::get_term( $term_id, $rule['taxonomy'] );
+									// Plain-text taxonomy/term identifier used to disambiguate the row-actions links for screen reader users tabbing through several rows.
+									$rule_context_label = trim( $taxonomy_name . ( $term ? ' / ' . trim( $term->name ) : '' ), ' /' );
 									do_action( 'tdw_admin_discount_rules_table_before_rule', $rule );
 									?>
 									<tr class="tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
@@ -2314,11 +2316,21 @@ class WC_Taxonomy_Discounts_Webdados {
 											?>
 											<div class="row-actions">
 												<span class="edit">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>"><?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?></a>
+													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
+														<?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?>
+														<?php if ( $rule_context_label ) { ?>
+															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+														<?php } ?>
+													</a>
 													|
 												</span>
 												<span class="trash deleterule">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>"><?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?></a>
+													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>">
+														<?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?>
+														<?php if ( $rule_context_label ) { ?>
+															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+														<?php } ?>
+													</a>
 												</span>
 											</div>
 										</td>
