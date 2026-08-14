@@ -412,7 +412,7 @@ class WC_Taxonomy_Discounts_Webdados {
 	 * @param string $selected The currently selected role value.
 	 */
 	public function wp_dropdown_roles( $action, $selected ) {
-		$options   = array(
+		$options = array(
 			'_all_users_' => '- ' . esc_html__( 'all users', 'taxonomy-discounts-woocommerce' ) . ' -',
 			'_logged_in_' => '- ' . esc_html__( 'logged-in users', 'taxonomy-discounts-woocommerce' ) . ' -',
 		);
@@ -421,7 +421,7 @@ class WC_Taxonomy_Discounts_Webdados {
 			'_all_users_' => esc_html__( 'all users', 'taxonomy-discounts-woocommerce' ),
 			'_logged_in_' => esc_html__( 'logged-in users', 'taxonomy-discounts-woocommerce' ),
 		);
-		$all_roles = wp_roles()->roles;
+		$all_roles     = wp_roles()->roles;
 		foreach ( $all_roles as $role => $details ) {
 			$name             = translate_user_role( $details['name'] );
 			$options[ $role ] = $name;
@@ -1636,7 +1636,7 @@ class WC_Taxonomy_Discounts_Webdados {
 				// No Applied rule or Applied rule that does NOT allow discount to zero
 				( ! $applied_rule || ( is_array( $applied_rule ) && ! $applied_rule['allows-discount-to-zero'] ) )
 			) {
-				$is_on_sale = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
+				$is_on_sale                                = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
 				$this->cache_on_sale[ $product->get_id() ] = $is_on_sale; // Set cache
 				if ( $this->debug ) {
 					do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
@@ -1650,7 +1650,7 @@ class WC_Taxonomy_Discounts_Webdados {
 				do_action( 'qm/lap', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
 			}
 		}
-		$is_on_sale = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
+		$is_on_sale                                = apply_filters( 'tdw_product_is_on_sale', $is_on_sale, $product, $originally_on_sale );
 		$this->cache_on_sale[ $product->get_id() ] = $is_on_sale; // Set cache
 		if ( $this->debug ) {
 			do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
@@ -2635,7 +2635,10 @@ class WC_Taxonomy_Discounts_Webdados {
 		if ( $this->admin_ajax_secure_calls() ) {
 			// phpcs:disable WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST['tdw-form-add-term'] ) ) {
-				$data = array();
+				// wp_unslash() works on both a single value and an array of values (the PRO "select multiple" case); cast to int(s) on the next line since sanitize_text_field() doesn't accept arrays.
+				$add_term = wp_unslash( $_POST['tdw-form-add-term'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$add_term = is_array( $add_term ) ? array_map( 'intval', $add_term ) : intval( $add_term );
+				$data     = array();
 				$type = isset( $_POST['tdw-form-add-type'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['tdw-form-add-type'] ) ) ) : '';
 				switch ( $type ) {
 					case 'percentage':
@@ -2685,18 +2688,18 @@ class WC_Taxonomy_Discounts_Webdados {
 					// This is where we should check for integer or array of integers and add to several termns at the same time
 					// The interface should only be implemented on the PRO Add-on, but the logic needs to be here
 					// See: https://github.com/webdados/Taxonomy-Term-and-Role-based-Discounts-for-WooCommerce---PRO-add-on/issues/12
-					if ( ( ! is_array( $_POST['tdw-form-add-term'] ) ) && intval( $_POST['tdw-form-add-term'] ) > 0 ) {
+					if ( ( ! is_array( $add_term ) ) && intval( $add_term ) > 0 ) {
 						// Default: save to one term
-						add_term_meta( intval( $_POST['tdw-form-add-term'] ), $this->discount_rule_meta_key, $data );
-					} elseif ( is_array( $_POST['tdw-form-add-term'] ) ) {
+						add_term_meta( intval( $add_term ), $this->discount_rule_meta_key, $data );
+					} elseif ( is_array( $add_term ) ) {
 						// If an array of terms is sent, we loop through it and add the rule to each term - From PRO Add-on
-						foreach ( $_POST['tdw-form-add-term'] as $term_id ) {
+						foreach ( $add_term as $term_id ) {
 							if ( intval( $term_id ) > 0 ) {
 								add_term_meta( intval( $term_id ), $this->discount_rule_meta_key, $data );
 							}
 						}
 					}
-					do_action( 'tdw_rule_add', intval( $_POST['tdw-form-add-term'] ), $data['taxonomy'], $data );
+					do_action( 'tdw_rule_add', intval( $add_term ), $data['taxonomy'], $data );
 					echo '1';
 				}
 			}
