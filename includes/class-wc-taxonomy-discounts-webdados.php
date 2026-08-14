@@ -1990,7 +1990,7 @@ class WC_Taxonomy_Discounts_Webdados {
 									<?php
 									foreach ( $add_taxonomy_options as $tax => $taxonomy ) {
 										?>
-										<option value="<?php echo esc_attr( $tax ); ?>">
+										<option value="<?php echo esc_attr( $tax ); ?>" <?php disabled( ! empty( $taxonomy['disabled'] ) ); ?>>
 											<?php echo esc_html( $taxonomy['label'] ); ?>
 											<?php do_action( 'tdw_admin_after_taxonomy_name', $tax, $taxonomy['taxonomy'] ); ?>
 										</option>
@@ -2020,7 +2020,7 @@ class WC_Taxonomy_Discounts_Webdados {
 									<?php
 									foreach ( $this->discount_types as $discount_type ) {
 										?>
-										<option value="<?php echo esc_attr( $discount_type ); ?>"><?php echo esc_html( self::get_rule_type_name( $discount_type, true ) ); ?></option>
+										<option value="<?php echo esc_attr( $discount_type ); ?>" <?php disabled( apply_filters( 'tdw_admin_discount_type_disabled', false, $discount_type ) ); ?>><?php echo esc_html( self::get_rule_type_name( $discount_type, true ) ); ?></option>
 										<?php
 									}
 									?>
@@ -2299,7 +2299,7 @@ class WC_Taxonomy_Discounts_Webdados {
 											}
 											?>
 										</td>
-										<td><?php echo $rule['active'] ? '<span class="dashicons dashicons-yes"></span>' : '&nbsp;'; ?></td>
+										<td><?php echo apply_filters( 'tdw_admin_rule_active_display', $rule['active'], $rule ) ? '<span class="dashicons dashicons-yes"></span>' : '&nbsp;'; ?></td>
 										<td>
 											<?php
 											echo esc_html( $taxonomy_name );
@@ -2315,24 +2315,37 @@ class WC_Taxonomy_Discounts_Webdados {
 												echo ' / <strong>' . wp_kses_post( $term_name ) . '</strong> <small title="' . esc_attr__( 'Number of terms in this taxonomy', 'taxonomy-discounts-woocommerce' ) . '">(' . intval( $term->count ) . ')</small>';
 											}
 											?>
-											<div class="row-actions">
-												<span class="edit">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
-														<?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?>
-														<?php if ( $rule_context_label ) { ?>
-															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+											<?php
+											$rule_editable  = apply_filters( 'tdw_rule_editable', true, $rule );
+											$rule_deletable = apply_filters( 'tdw_rule_deletable', true, $rule );
+											?>
+											<div class="row-actions"<?php echo ( ! $rule_editable && ! $rule_deletable ) ? ' style="left: auto; visibility: visible;"' : ''; ?>>
+												<?php if ( $rule_editable ) { ?>
+													<span class="edit">
+														<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
+															<?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?>
+															<?php if ( $rule_context_label ) { ?>
+																<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+															<?php } ?>
+														</a>
+														<?php if ( $rule_deletable ) { ?>
+															|
 														<?php } ?>
-													</a>
-													|
-												</span>
-												<span class="trash deleterule">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>">
-														<?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?>
-														<?php if ( $rule_context_label ) { ?>
-															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
-														<?php } ?>
-													</a>
-												</span>
+													</span>
+												<?php } ?>
+												<?php if ( $rule_deletable ) { ?>
+													<span class="trash deleterule">
+														<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>">
+															<?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?>
+															<?php if ( $rule_context_label ) { ?>
+																<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+															<?php } ?>
+														</a>
+													</span>
+												<?php } ?>
+												<?php if ( ! $rule_editable && ! $rule_deletable ) { ?>
+													<span class="description" style="color: red;"><?php echo wp_kses_post( apply_filters( 'tdw_rule_not_editable_or_deletable_notice', '', $rule ) ); ?></span>
+												<?php } ?>
 											</div>
 										</td>
 										<td>
@@ -2720,6 +2733,9 @@ class WC_Taxonomy_Discounts_Webdados {
 					'taxonomy' => isset( $_POST['tdw-form-edit-taxonomy'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['tdw-form-edit-taxonomy'] ) ) ) : '',
 				);
 			}
+			if ( ! apply_filters( 'tdw_rule_editable', true, $old_data ) ) {
+				wp_die();
+			}
 			$data = array();
 			$type = isset( $_POST['tdw-form-edit-type'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['tdw-form-edit-type'] ) ) ) : '';
 			switch ( $type ) {
@@ -2803,6 +2819,9 @@ class WC_Taxonomy_Discounts_Webdados {
 					$meta    = $meta[0];
 					$term_id = $meta->term_id;
 					$data    = maybe_unserialize( $meta->meta_value );
+					if ( ! apply_filters( 'tdw_rule_deletable', true, $data ) ) {
+						wp_die();
+					}
 					// ...and then delete it
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 					$wpdb->query(

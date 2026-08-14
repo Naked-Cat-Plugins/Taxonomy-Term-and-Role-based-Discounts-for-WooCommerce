@@ -171,6 +171,7 @@ You can report any security bugs found in the source code of this plugin through
 * [NEW] Accessibility improvements to the discount rules table and the add/edit rule forms: proper field labels, a table caption and skip-to-form link for screen readers, clearer validation and save/delete feedback, and screen reader announcements for dynamically-loaded fields
 * [NEW] Redirect to the settings page after activating the plugin
 * [FIX] Duplicate id/name on the percentage discount’s “Aggregate variations” field in the rules table’s inline edit row
+* [DEV] New `tdw_rule_editable`, `tdw_rule_deletable`, `tdw_admin_rule_active_display`, and `tdw_admin_discount_type_disabled` filters so the PRO add-on (or other 3rd party code) can block editing, deleting, or applying specific discount rules and mark their type as unavailable in the add form
 * [DEV] Tested up to WordPress 7.1-RC3-63235 and WooCommerce 11.0.1
 
 = 8.4 - 2026-04-29 =
