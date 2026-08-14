@@ -2274,7 +2274,8 @@ class WC_Taxonomy_Discounts_Webdados {
 									$taxonomy_name = $taxonomy ? $taxonomy->labels->singular_name : '';
 									$term          = self::get_term( $term_id, $rule['taxonomy'] );
 									// Plain-text taxonomy/term identifier used to disambiguate the row-actions links for screen reader users tabbing through several rows.
-									$rule_context_label = trim( $taxonomy_name . ( $term ? ' / ' . trim( $term->name ) : '' ), ' /' );
+									// $taxonomy is falsy for termless rules (e.g. PRO add-on sitewide rules), in which case $term is a WP_Error, not a WP_Term.
+									$rule_context_label = trim( $taxonomy_name . ( $taxonomy && $term instanceof WP_Term ? ' / ' . trim( $term->name ) : '' ), ' /' );
 									do_action( 'tdw_admin_discount_rules_table_before_rule', $rule );
 									?>
 									<tr class="tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
