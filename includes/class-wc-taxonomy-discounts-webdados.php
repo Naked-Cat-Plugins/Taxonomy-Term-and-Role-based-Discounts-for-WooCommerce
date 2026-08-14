@@ -2455,8 +2455,8 @@ class WC_Taxonomy_Discounts_Webdados {
 												</span>
 												/
 												<span>
-													<?php /* Note: id/name intentionally left as-is (shared with the add-form field); tracked separately in https://github.com/Naked-Cat-Plugins/Taxonomy-Term-and-Role-based-Discounts-for-WooCommerce/issues/4, so an aria-label is used here instead of a <label for> to avoid relying on that non-unique id. */ ?>
-													<select id="tdw-form-add-percentage-aggr-var" name="tdw-form-add-percentage-aggr-var" aria-label="<?php esc_attr_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?>">
+													<label for="tdw-form-edit-percentage-aggr-var-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="screen-reader-text"><?php esc_html_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?></label>
+													<select id="tdw-form-edit-percentage-aggr-var-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-percentage-aggr-var">
 														<option value="0"
 														<?php
 														if ( ! $rule['aggr-var'] ) {
@@ -2729,7 +2729,7 @@ class WC_Taxonomy_Discounts_Webdados {
 						$percentage_min_qtt = isset( $_POST['tdw-form-edit-percentage-min-qtt'] ) ? floatval( $_POST['tdw-form-edit-percentage-min-qtt'] ) : 0;
 						$data['min-qtt']    = $percentage_min_qtt;
 						$data['value']      = $percentage_value;
-						$data['aggr-var']   = ( isset( $_POST['tdw-form-add-percentage-aggr-var'] ) && intval( $_POST['tdw-form-add-percentage-aggr-var'] ) === 1 ? true : false );
+						$data['aggr-var']   = ( isset( $_POST['tdw-form-edit-percentage-aggr-var'] ) && intval( $_POST['tdw-form-edit-percentage-aggr-var'] ) === 1 ? true : false );
 					}
 					break;
 				case 'x-for-y':
