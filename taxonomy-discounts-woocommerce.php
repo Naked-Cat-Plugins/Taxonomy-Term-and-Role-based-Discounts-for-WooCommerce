@@ -63,6 +63,36 @@ function wctd_init_no_woocommerce() {
 	<?php
 }
 
+/**
+ * On activation, set a transient so we can redirect to the settings page.
+ */
+function wctd_redirect_on_activation() {
+	set_transient( 'wctd_activation_redirect_' . get_current_user_id(), true, 30 );
+}
+register_activation_hook( __FILE__, 'wctd_redirect_on_activation' );
+
+/**
+ * Redirect to the settings page after single (non-bulk) activation.
+ */
+add_action(
+	'admin_init',
+	function () {
+		// Do not redirect during AJAX requests.
+		if ( wp_doing_ajax() ) {
+			return;
+		}
+		$transient_key = 'wctd_activation_redirect_' . get_current_user_id();
+		if ( get_transient( $transient_key ) ) {
+			delete_transient( $transient_key );
+			// Do not redirect on bulk activation.
+			if ( ! isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				wp_safe_redirect( admin_url( 'edit.php?post_type=product&page=wc_taxonomy_discounts_webdados' ) );
+				exit;
+			}
+		}
+	}
+);
+
 /* HPOS Compatible */
 add_action(
 	'before_woocommerce_init',
