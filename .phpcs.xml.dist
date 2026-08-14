@@ -23,6 +23,8 @@
 	<arg name="colors"/>
 
 	<config name="minimum_supported_wp_version" value="5.8"/>
+	<config name="testVersion" value="7.2-"/>
+	<rule ref="PHPCompatibility"/>
 
 	<!-- WordPress Coding Standards -->
 	<rule ref="WordPress">

@@ -4,9 +4,13 @@ __MACOSX
 
 # Tooling files
 .git/*
+.git
 .github/*
+.github
 .wordpress-org/*
+.wordpress-org
 .svn/*
+.svn
 .distignore
 .gitignore
 .editorconfig
@@ -15,6 +19,7 @@ __MACOSX
 .nvmrc
 .phpcs.xml.dist
 node_modules/*
+node_modules
 package.json
 package-lock.json
 webpack.config.js
