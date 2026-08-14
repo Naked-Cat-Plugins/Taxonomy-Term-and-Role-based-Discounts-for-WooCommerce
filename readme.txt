@@ -5,7 +5,7 @@ Tags: discount, bulk discount, category discount, role-based pricing, woocommerc
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.2
-Stable tag: 8.4
+Stable tag: 8.4.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -166,6 +166,9 @@ You can report any security bugs found in the source code of this plugin through
 5. Show discount information, including dates on the product page (available with the PRO add-on)
 
 == Changelog ==
+
+= 8.4.1 - 2026-08-14 =
+* [DEV] Accessibility improvements to the discount rules table and the add/edit rule forms: proper field labels, a table caption and skip-to-form link for screen readers, clearer validation and save/delete feedback, and screen reader announcements for dynamically-loaded fields
 
 = 8.4 - 2026-04-29 =
 * [FIX] On sale status when product cache is active and a 3rd party is filtering `tdw_product_is_on_sale´

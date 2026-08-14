@@ -248,6 +248,11 @@ class WC_Taxonomy_Discounts_Webdados {
 				'tdw_admin_js_localization',
 				array(
 					'string_are_you_sure_delete_rule' => esc_html__( 'Are you sure you want to permanently delete this discount rule?', 'taxonomy-discounts-woocommerce' ),
+					'string_form_validation_error'    => esc_html__( 'Please correct the highlighted fields before saving.', 'taxonomy-discounts-woocommerce' ),
+					'string_rule_added'               => esc_html__( 'Discount rule added.', 'taxonomy-discounts-woocommerce' ),
+					'string_rule_updated'             => esc_html__( 'Discount rule updated.', 'taxonomy-discounts-woocommerce' ),
+					'string_rule_deleted'             => esc_html__( 'Discount rule deleted.', 'taxonomy-discounts-woocommerce' ),
+					'string_term_field_available'     => esc_html__( 'Term field now available.', 'taxonomy-discounts-woocommerce' ),
 				)
 			);
 			wp_localize_script( 'tdw_admin_js', 'tdw_admin_js', $localization );
@@ -411,6 +416,11 @@ class WC_Taxonomy_Discounts_Webdados {
 			'_all_users_' => '- ' . esc_html__( 'all users', 'taxonomy-discounts-woocommerce' ) . ' -',
 			'_logged_in_' => '- ' . esc_html__( 'logged-in users', 'taxonomy-discounts-woocommerce' ) . ' -',
 		);
+		// Clean accessible names for the options above, whose visible text is decorated with dashes.
+		$option_labels = array(
+			'_all_users_' => esc_html__( 'all users', 'taxonomy-discounts-woocommerce' ),
+			'_logged_in_' => esc_html__( 'logged-in users', 'taxonomy-discounts-woocommerce' ),
+		);
 		$all_roles = wp_roles()->roles;
 		foreach ( $all_roles as $role => $details ) {
 			$name             = translate_user_role( $details['name'] );
@@ -418,11 +428,11 @@ class WC_Taxonomy_Discounts_Webdados {
 		}
 		$options = apply_filters( 'tdw_admin_available_user_roles', $options );
 		?>
-		<select name="tdw-form-<?php echo esc_attr( $action ); ?>-role" id="tdw-form-<?php echo esc_attr( $action ); ?>-role">
+		<select name="tdw-form-<?php echo esc_attr( $action ); ?>-role" id="tdw-form-<?php echo esc_attr( $action ); ?>-role"<?php echo 'edit' === $action ? ' aria-label="' . esc_attr__( 'User role', 'taxonomy-discounts-woocommerce' ) . '"' : ''; ?>>
 			<?php
 			foreach ( $options as $key => $temp ) {
 				?>
-				<option value="<?php echo esc_attr( $key ); ?>"<?php selected( $selected, $key ); ?>><?php echo esc_html( $temp ); ?></option>
+				<option value="<?php echo esc_attr( $key ); ?>"<?php echo isset( $option_labels[ $key ] ) ? ' label="' . esc_attr( $option_labels[ $key ] ) . '"' : ''; ?><?php selected( $selected, $key ); ?>><?php echo esc_html( $temp ); ?></option>
 				<?php
 			}
 			?>
@@ -1855,8 +1865,15 @@ class WC_Taxonomy_Discounts_Webdados {
 	 * Displays the discount rules management interface including add/edit forms and rules table
 	 */
 	public function admin_page() {
+		$taxonomy_objects = self::get_product_taxonomies();
 		?>
 		<div class="wrap woocommerce tdw">
+
+			<div id="tdw-admin-status" class="screen-reader-text" role="status" aria-live="polite"></div>
+
+			<?php if ( count( $taxonomy_objects ) > 0 ) { ?>
+				<a href="#tdw-form-add-taxonomy" class="screen-reader-text screen-reader-shortcut"><?php esc_html_e( 'Skip to add new discount rule form', 'taxonomy-discounts-woocommerce' ); ?></a>
+			<?php } ?>
 
 			<h1>
 				<?php esc_html_e( 'Taxonomy/Term and Role-based Discounts for WooCommerce', 'taxonomy-discounts-woocommerce' ); ?> <?php echo esc_html( $this->version ); ?>
@@ -1919,11 +1936,11 @@ class WC_Taxonomy_Discounts_Webdados {
 			<?php do_action( 'tdw_admin_after_discount_rules_table' ); ?>
 
 			<?php
-			$taxonomy_objects = self::get_product_taxonomies();
 			if ( count( $taxonomy_objects ) > 0 ) {
 				?>
 				<div id="tdw-form-add-div">
 					<form id="tdw-form-add" method="post">
+						<p id="tdw-form-add-errors" class="screen-reader-text" role="alert"></p>
 						<h2><?php esc_html_e( 'Add new Taxonomy/Term based discount rule:', 'taxonomy-discounts-woocommerce' ); ?></h2>
 
 						<?php
@@ -1956,7 +1973,7 @@ class WC_Taxonomy_Discounts_Webdados {
 						<!-- Taxonomy and term -->
 						<div id="tdw-form-add-div-1">
 							<p class="tdw-float-left">
-								<label for="tdw-form-add-taxonomy"><strong><?php esc_html_e( 'Taxonomy', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-taxonomy"><strong><?php esc_html_e( 'Taxonomy', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<?php
 								$add_taxonomy_options = array();
@@ -1969,7 +1986,7 @@ class WC_Taxonomy_Discounts_Webdados {
 								$add_taxonomy_options = apply_filters( 'tdw_admin_add_form_taxonomies_options', $add_taxonomy_options );
 								?>
 								<select id="tdw-form-add-taxonomy" name="tdw-form-add-taxonomy">
-									<option value="">- &nbsp;<?php esc_html_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>&nbsp; -</option>
+									<option value="" label="<?php esc_attr_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>">- &nbsp;<?php esc_html_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>&nbsp; -</option>
 									<?php
 									foreach ( $add_taxonomy_options as $tax => $taxonomy ) {
 										?>
@@ -1990,16 +2007,16 @@ class WC_Taxonomy_Discounts_Webdados {
 						<!-- Discount configuration -->
 						<div id="tdw-form-add-div-2" class="tdw-hidden">
 							<p id="tdw-form-add-choose-role" class="tdw-float-left">
-								<label for="tdw-form-add-role"><strong><?php esc_html_e( 'User role', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-role"><strong><?php esc_html_e( 'User role', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<?php self::wp_dropdown_roles( 'add', '' ); ?>
 							</p>
 							<div class="clear"></div>
 							<p id="tdw-form-add-choose-type" class="tdw-float-left">
-								<label for="tdw-form-add-type"><strong><?php esc_html_e( 'Discount type', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-type"><strong><?php esc_html_e( 'Discount type', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<select id="tdw-form-add-type" name="tdw-form-add-type">
-									<option value="">- &nbsp;<?php esc_html_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>&nbsp; -</option>
+									<option value="" label="<?php esc_attr_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>">- &nbsp;<?php esc_html_e( 'choose', 'taxonomy-discounts-woocommerce' ); ?>&nbsp; -</option>
 									<?php
 									foreach ( $this->discount_types as $discount_type ) {
 										?>
@@ -2029,13 +2046,20 @@ class WC_Taxonomy_Discounts_Webdados {
 								?>
 							</p>
 							<p id="tdw-form-add-choose-type-percentage" class="tdw-float-left tdw-hidden tdw-hide-empty-type">
-								<label><strong><?php esc_html_e( 'Min. Qtt.', 'taxonomy-discounts-woocommerce' ); ?> / <?php esc_html_e( 'Discount', 'taxonomy-discounts-woocommerce' ); ?> / <?php esc_html_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<strong><?php esc_html_e( 'Min. Qtt.', 'taxonomy-discounts-woocommerce' ); ?> / <?php esc_html_e( 'Discount', 'taxonomy-discounts-woocommerce' ); ?> / <?php esc_html_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?>:</strong>
 								<br>
-								<span><input type="number" id="tdw-form-add-percentage-min-qtt" name="tdw-form-add-percentage-min-qtt" min="0" step="1" placeholder="0"></span>
-								/
-								<span><input type="number" id="tdw-form-add-percentage-value" name="tdw-form-add-percentage-value" min="0.01" max="99.99" step="0.01" placeholder="0" class="required">%</span>
+								<span>
+									<label for="tdw-form-add-percentage-min-qtt" class="screen-reader-text"><?php esc_html_e( 'Min. Qtt.', 'taxonomy-discounts-woocommerce' ); ?></label>
+									<input type="number" id="tdw-form-add-percentage-min-qtt" name="tdw-form-add-percentage-min-qtt" min="0" step="1" placeholder="0">
+								</span>
 								/
 								<span>
+									<label for="tdw-form-add-percentage-value" class="screen-reader-text"><?php esc_html_e( 'Discount', 'taxonomy-discounts-woocommerce' ); ?></label>
+									<input type="number" id="tdw-form-add-percentage-value" name="tdw-form-add-percentage-value" min="0.01" max="99.99" step="0.01" placeholder="0" class="required" aria-required="true">%
+								</span>
+								/
+								<span>
+									<label for="tdw-form-add-percentage-aggr-var" class="screen-reader-text"><?php esc_html_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?></label>
 									<select id="tdw-form-add-percentage-aggr-var" name="tdw-form-add-percentage-aggr-var">
 										<option value="0"><?php esc_html_e( 'No', 'taxonomy-discounts-woocommerce' ); ?></option>
 										<option value="1"><?php esc_html_e( 'Yes', 'taxonomy-discounts-woocommerce' ); ?></option>
@@ -2057,7 +2081,7 @@ class WC_Taxonomy_Discounts_Webdados {
 								</span>
 							</p>
 							<p id="tdw-form-add-choose-type-x-for-y" class="tdw-float-left tdw-hidden tdw-hide-empty-type">
-								<label><strong>
+								<strong>
 									<?php
 									echo wp_kses_post(
 										sprintf(
@@ -2068,11 +2092,17 @@ class WC_Taxonomy_Discounts_Webdados {
 										)
 									);
 									?>
-								</strong>:</label>
+								:</strong>
 								<br>
-								<span><input type="number" id="tdw-form-add-x-for-y-x" name="tdw-form-add-x-for-y-x" min="1" step="1" placeholder="x" class="required"></span>
+								<span>
+									<label for="tdw-form-add-x-for-y-x" class="screen-reader-text"><?php esc_html_e( 'Quantity to buy', 'taxonomy-discounts-woocommerce' ); ?></label>
+									<input type="number" id="tdw-form-add-x-for-y-x" name="tdw-form-add-x-for-y-x" min="1" step="1" placeholder="x" class="required" aria-required="true">
+								</span>
 								/
-								<span><input type="number" id="tdw-form-add-x-for-y-y" name="tdw-form-add-x-for-y-y" min="1" step="1" placeholder="y" class="required"></span>
+								<span>
+									<label for="tdw-form-add-x-for-y-y" class="screen-reader-text"><?php esc_html_e( 'Free quantity', 'taxonomy-discounts-woocommerce' ); ?></label>
+									<input type="number" id="tdw-form-add-x-for-y-y" name="tdw-form-add-x-for-y-y" min="1" step="1" placeholder="y" class="required" aria-required="true">
+								</span>
 								<?php do_action( 'tdw_admin_after_x_for_y_add_form' ); ?>
 							</p>
 							<?php do_action( 'tdw_admin_after_discount_add_form' ); ?>
@@ -2082,12 +2112,12 @@ class WC_Taxonomy_Discounts_Webdados {
 						<!-- Other settings -->
 						<div id="tdw-form-add-div-3" class="tdw-hidden">
 							<p id="tdw-form-add-choose-priority" class="tdw-float-left">
-								<label for="tdw-form-add-priority"><strong><?php esc_html_e( 'Priority', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-priority"><strong><?php esc_html_e( 'Priority', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
-								<input type="number" id="tdw-form-add-priority" name="tdw-form-add-priority" min="1" max="999" step="1" class="required">
+								<input type="number" id="tdw-form-add-priority" name="tdw-form-add-priority" min="1" max="999" step="1" class="required" aria-required="true">
 							</p>
 							<p id="tdw-form-add-choose-disable-coupon" class="tdw-float-left" title="<?php esc_attr_e( 'Disable extra coupon discounts', 'taxonomy-discounts-woocommerce' ); ?>">
-								<label for="tdw-form-add-disable-coupon"><strong><?php esc_html_e( 'Disable coupons', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-disable-coupon"><strong><?php esc_html_e( 'Disable coupons', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<select id="tdw-form-add-disable-coupon" name="tdw-form-add-disable-coupon">
 									<option value="1"><?php esc_html_e( 'Yes', 'taxonomy-discounts-woocommerce' ); ?></option>
@@ -2100,7 +2130,7 @@ class WC_Taxonomy_Discounts_Webdados {
 						<!-- Active settings -->
 						<div id="tdw-form-add-div-4" class="tdw-hidden">
 							<p id="tdw-form-add-choose-active" class="tdw-float-left">
-								<label for="tdw-form-add-active"><strong><?php esc_html_e( 'Active', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-active"><strong><?php esc_html_e( 'Active', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<select id="tdw-form-add-active" name="tdw-form-add-active">
 									<option value="1"><?php esc_html_e( 'Yes', 'taxonomy-discounts-woocommerce' ); ?></option>
@@ -2108,7 +2138,7 @@ class WC_Taxonomy_Discounts_Webdados {
 								</select>
 							</p>
 							<p id="tdw-form-add-choose-from" class="tdw-float-left">
-								<label for="tdw-form-add-from"><strong><?php esc_html_e( 'From', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-from"><strong><?php esc_html_e( 'From', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<input type="text" class="tdw-date-field" name="tdw-form-add-from" id="tdw-form-add-from" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" maxlength="10">
 								<?php
@@ -2117,7 +2147,7 @@ class WC_Taxonomy_Discounts_Webdados {
 									<input type="text" class="tdw-time-field" name="tdw-form-add-from-time" id="tdw-form-add-from-time" placeholder="00:00:00" maxlength="8"><?php } ?>
 							</p>
 							<p id="tdw-form-add-choose-to" class="tdw-float-left">
-								<label for="tdw-form-add-to"><strong><?php esc_html_e( 'To', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+								<label for="tdw-form-add-to"><strong><?php esc_html_e( 'To', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 								<br>
 								<input type="text" class="tdw-date-field" name="tdw-form-add-to" id="tdw-form-add-to" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" maxlength="10">
 								<?php
@@ -2138,7 +2168,7 @@ class WC_Taxonomy_Discounts_Webdados {
 							<!-- Advanced settings -->
 							<div class="tdw-form-add-div-more tdw-hidden">
 								<p id="tdw-form-add-advanced-id" class="tdw-float-left">
-									<label for="tdw-form-advanced-id"><strong><?php esc_html_e( 'ID', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+									<label for="tdw-form-advanced-id"><strong><?php esc_html_e( 'ID', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 									<br>
 									<input type="text" name="tdw-form-advanced-id" id="tdw-form-advanced-id" placeholder="<?php esc_attr_e( 'For developers', 'taxonomy-discounts-woocommerce' ); ?>" maxlength="10">
 								</p>
@@ -2209,7 +2239,9 @@ class WC_Taxonomy_Discounts_Webdados {
 		-->
 		<?php do_action( 'tdw_admin_before_rules_table' ); ?>
 		<form id="tdw-form-edit" method="post">
-			<table class="wp-list-table widefat">
+			<p id="tdw-form-edit-errors" class="screen-reader-text" role="alert"></p>
+			<table class="wp-list-table widefat" tabindex="-1">
+				<caption class="screen-reader-text"><?php esc_html_e( 'Current discount rules table. Each row has Edit and Delete actions.', 'taxonomy-discounts-woocommerce' ); ?></caption>
 				<thead>
 					<tr>
 						<th title="<?php esc_attr_e( 'Priority', 'taxonomy-discounts-woocommerce' ); ?>" style="text-align: center;"><?php esc_html_e( 'Pri.', 'taxonomy-discounts-woocommerce' ); ?></th>
@@ -2241,6 +2273,8 @@ class WC_Taxonomy_Discounts_Webdados {
 									$taxonomy      = get_taxonomy( $rule['taxonomy'] );
 									$taxonomy_name = $taxonomy ? $taxonomy->labels->singular_name : '';
 									$term          = self::get_term( $term_id, $rule['taxonomy'] );
+									// Plain-text taxonomy/term identifier used to disambiguate the row-actions links for screen reader users tabbing through several rows.
+									$rule_context_label = trim( $taxonomy_name . ( $term ? ' / ' . trim( $term->name ) : '' ), ' /' );
 									do_action( 'tdw_admin_discount_rules_table_before_rule', $rule );
 									?>
 									<tr class="tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
@@ -2282,11 +2316,21 @@ class WC_Taxonomy_Discounts_Webdados {
 											?>
 											<div class="row-actions">
 												<span class="edit">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>"><?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?></a>
+													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
+														<?php esc_html_e( 'Edit', 'taxonomy-discounts-woocommerce' ); ?>
+														<?php if ( $rule_context_label ) { ?>
+															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+														<?php } ?>
+													</a>
 													|
 												</span>
 												<span class="trash deleterule">
-													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>"><?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?></a>
+													<a href="#" data-meta-id="<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" data-taxonomy="<?php echo esc_attr( $rule['taxonomy'] ); ?>">
+														<?php esc_html_e( 'Delete Permanently', 'taxonomy-discounts-woocommerce' ); ?>
+														<?php if ( $rule_context_label ) { ?>
+															<span class="screen-reader-text"> <?php echo esc_html( $rule_context_label ); ?></span>
+														<?php } ?>
+													</a>
 												</span>
 											</div>
 										</td>
@@ -2377,10 +2421,10 @@ class WC_Taxonomy_Discounts_Webdados {
 									</tr>
 									<tr id="tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="tdw-hidden tdw-edit-rule tdw-edit-rule-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>">
 										<td>
-											<input type="number" id="tdw-form-edit-priorit-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-priority" value="<?php echo intval( $priority ); ?>" min="1" max="999" step="1" class="required">
+											<input type="number" id="tdw-form-edit-priorit-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-priority" value="<?php echo intval( $priority ); ?>" min="1" max="999" step="1" class="required" aria-required="true" aria-label="<?php esc_attr_e( 'Priority', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
-											<input type="checkbox" id="tdw-form-edit-active-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-active" value="1" <?php checked( $rule['active'], 1 ); ?>>
+											<input type="checkbox" id="tdw-form-edit-active-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-active" value="1" <?php checked( $rule['active'], 1 ); ?> aria-label="<?php esc_attr_e( 'Active', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
 											<input type="hidden" id="tdw-form-edit-type-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-type" value="<?php echo esc_attr( $rule['type'] ); ?>">
@@ -2399,12 +2443,19 @@ class WC_Taxonomy_Discounts_Webdados {
 										switch ( $rule['type'] ) {
 											case 'percentage':
 												?>
-												<span title="<?php echo esc_attr__( 'Min. Qtt.', 'taxonomy-discounts-woocommerce' ); ?>"><input type="number" id="tdw-form-edit-percentage-min-qtt-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-percentage-min-qtt" min="0" step="1" placeholder="0" value="<?php echo intval( $rule['min-qtt'] ); ?>"></span>
-												/
-												<span title="<?php echo esc_attr__( 'Discount', 'taxonomy-discounts-woocommerce' ); ?>"><input type="number" id="tdw-form-edit-percentage-value-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-percentage-value" min="0.01" max="99.99" step="0.01" placeholder="0.01" value="<?php echo floatval( $rule['value'] ); ?>" class="required">%</span>
+												<span>
+													<label for="tdw-form-edit-percentage-min-qtt-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="screen-reader-text"><?php esc_html_e( 'Min. Qtt.', 'taxonomy-discounts-woocommerce' ); ?></label>
+													<input type="number" id="tdw-form-edit-percentage-min-qtt-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-percentage-min-qtt" min="0" step="1" placeholder="0" value="<?php echo intval( $rule['min-qtt'] ); ?>">
+												</span>
 												/
 												<span>
-													<select id="tdw-form-add-percentage-aggr-var" name="tdw-form-add-percentage-aggr-var">
+													<label for="tdw-form-edit-percentage-value-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="screen-reader-text"><?php esc_html_e( 'Discount', 'taxonomy-discounts-woocommerce' ); ?></label>
+													<input type="number" id="tdw-form-edit-percentage-value-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-percentage-value" min="0.01" max="99.99" step="0.01" placeholder="0.01" value="<?php echo floatval( $rule['value'] ); ?>" class="required" aria-required="true">%
+												</span>
+												/
+												<span>
+													<?php /* Note: id/name intentionally left as-is (shared with the add-form field); tracked separately in https://github.com/Naked-Cat-Plugins/Taxonomy-Term-and-Role-based-Discounts-for-WooCommerce/issues/4, so an aria-label is used here instead of a <label for> to avoid relying on that non-unique id. */ ?>
+													<select id="tdw-form-add-percentage-aggr-var" name="tdw-form-add-percentage-aggr-var" aria-label="<?php esc_attr_e( 'Aggregate variations', 'taxonomy-discounts-woocommerce' ); ?>">
 														<option value="0"
 														<?php
 														if ( ! $rule['aggr-var'] ) {
@@ -2423,9 +2474,15 @@ class WC_Taxonomy_Discounts_Webdados {
 												break;
 											case 'x-for-y':
 												?>
-												<span><input type="number" id="tdw-form-edit-x-for-y-x-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-x-for-y-x" min="1" step="1" placeholder="x" value="<?php echo intval( $rule['x'] ); ?>" class="required"></span>
+												<span>
+													<label for="tdw-form-edit-x-for-y-x-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="screen-reader-text"><?php esc_html_e( 'Quantity to buy', 'taxonomy-discounts-woocommerce' ); ?></label>
+													<input type="number" id="tdw-form-edit-x-for-y-x-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-x-for-y-x" min="1" step="1" placeholder="x" value="<?php echo intval( $rule['x'] ); ?>" class="required" aria-required="true">
+												</span>
 												/
-												<span><input type="number" id="tdw-form-edit-x-for-y-y-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-x-for-y-y" min="1" step="1" placeholder="y" value="<?php echo intval( $rule['y'] ); ?>" class="required"></span>
+												<span>
+													<label for="tdw-form-edit-x-for-y-y-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" class="screen-reader-text"><?php esc_html_e( 'Free quantity', 'taxonomy-discounts-woocommerce' ); ?></label>
+													<input type="number" id="tdw-form-edit-x-for-y-y-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-x-for-y-y" min="1" step="1" placeholder="y" value="<?php echo intval( $rule['y'] ); ?>" class="required" aria-required="true">
+												</span>
 												<?php do_action( 'tdw_admin_after_x_for_y_edit_form', $rule ); ?>
 												<?php
 												break;
@@ -2438,24 +2495,24 @@ class WC_Taxonomy_Discounts_Webdados {
 										?>
 										</td>
 										<td>
-											<input type="checkbox" id="tdw-form-edit-disable-coupon-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-disable-coupon" value="1" <?php checked( $rule['disable_coupon'], 1 ); ?>>
+											<input type="checkbox" id="tdw-form-edit-disable-coupon-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-disable-coupon" value="1" <?php checked( $rule['disable_coupon'], 1 ); ?> aria-label="<?php esc_attr_e( 'Disable coupons', 'taxonomy-discounts-woocommerce' ); ?>">
 										</td>
 										<td>
-											<input type="text" class="tdw-date-field" id="tdw-form-edit-from-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-from" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 0, 10 ) ); ?>" maxlength="10">
+											<input type="text" class="tdw-date-field" id="tdw-form-edit-from-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-from" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 0, 10 ) ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'From date', 'taxonomy-discounts-woocommerce' ); ?>">
 											<?php
 											if ( $this->enable_time ) {
 												?>
-												<input type="text" class="tdw-time-field" name="tdw-form-edit-from-time" id="tdw-form-add-from-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="00:00:00" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 11, 19 ) ); ?>" maxlength="8">
+												<input type="text" class="tdw-time-field" name="tdw-form-edit-from-time" id="tdw-form-add-from-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="00:00:00" value="<?php echo esc_attr( substr( trim( $rule['from'] ), 11, 19 ) ); ?>" maxlength="8" aria-label="<?php esc_attr_e( 'From time', 'taxonomy-discounts-woocommerce' ); ?>">
 												<?php
 											}
 											?>
 										</td>
 										<td>
-											<input type="text" class="tdw-date-field" id="tdw-form-edit-to-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-to" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 0, 10 ) ); ?>" maxlength="10">
+											<input type="text" class="tdw-date-field" id="tdw-form-edit-to-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-to" placeholder="<?php esc_attr_e( 'yyyy-mm-dd', 'taxonomy-discounts-woocommerce' ); ?>" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 0, 10 ) ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'To date', 'taxonomy-discounts-woocommerce' ); ?>">
 											<?php
 											if ( $this->enable_time ) {
 												?>
-												<input type="text" class="tdw-time-field" name="tdw-form-edit-to-time" id="tdw-form-add-to-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="23:59:59" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 11, 19 ) ); ?>" maxlength="8">
+												<input type="text" class="tdw-time-field" name="tdw-form-edit-to-time" id="tdw-form-add-to-time-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" placeholder="23:59:59" value="<?php echo esc_attr( substr( trim( $rule['to'] ), 11, 19 ) ); ?>" maxlength="8" aria-label="<?php esc_attr_e( 'To time', 'taxonomy-discounts-woocommerce' ); ?>">
 												<?php
 											}
 											?>
@@ -2468,7 +2525,7 @@ class WC_Taxonomy_Discounts_Webdados {
 										) {
 											?>
 											<td>
-												<input type="text" id="tdw-form-edit-advanced-id-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-advanced-id" value="<?php echo esc_attr( isset( $rule['advanced_id'] ) ? trim( $rule['advanced_id'] ) : '' ); ?>" maxlength="10">
+												<input type="text" id="tdw-form-edit-advanced-id-<?php echo esc_html( isset( $rule['meta_id_prefix'] ) ? $rule['meta_id_prefix'] : '' ); ?><?php echo intval( $rule['meta_id'] ); ?>" name="tdw-form-edit-advanced-id" value="<?php echo esc_attr( isset( $rule['advanced_id'] ) ? trim( $rule['advanced_id'] ) : '' ); ?>" maxlength="10" aria-label="<?php esc_attr_e( 'ID', 'taxonomy-discounts-woocommerce' ); ?>">
 											</td>
 										<?php } ?>
 										<td>
@@ -2506,7 +2563,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		if ( $this->admin_ajax_secure_calls() ) {
 			// phpcs:disable WordPress.Security.NonceVerification.Missing
 			?>
-				<label for="tdw-form-add-term"><strong><?php esc_html_e( 'Term', 'taxonomy-discounts-woocommerce' ); ?></strong>:</label>
+				<label for="tdw-form-add-term"><strong><?php esc_html_e( 'Term', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 				<br>
 				<?php
 				$taxonomy = isset( $_POST['taxonomy'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['taxonomy'] ) ) ) : '';
@@ -2524,6 +2581,14 @@ class WC_Taxonomy_Discounts_Webdados {
 							'hide_if_empty'     => true,
 							'echo'              => false,
 						)
+					);
+					// wp_dropdown_categories() doesn't support a separate label attribute for show_option_none,
+					// so the "- choose -" visual decoration is injected into the option's accessible name too;
+					// give that specific option (uniquely identified by its empty value) a clean label instead.
+					$terms = str_replace(
+						'<option value=""',
+						'<option value="" label="' . esc_attr__( 'choose', 'taxonomy-discounts-woocommerce' ) . '"',
+						$terms
 					);
 					// Not escaped because wp_dropdown_categories does not need it (and it fails with wp_kses_post)
 					if ( trim( $terms ) !== '' ) {
