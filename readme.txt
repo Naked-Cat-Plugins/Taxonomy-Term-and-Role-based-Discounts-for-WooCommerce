@@ -167,6 +167,9 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
+= TBA =
+* [DEV] The term field’s label now has an `id`, so the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) can associate it with the enhanced multiple-terms field instead of adding the `id` itself with JavaScript
+
 = 8.5 - 2026-08-14 =
 * [NEW] Accessibility improvements to the discount rules table and the add/edit rule forms: proper field labels, a table caption and skip-to-form link for screen readers, clearer validation and save/delete feedback, and screen reader announcements for dynamically-loaded fields
 * [NEW] Redirect to the settings page after activating the plugin

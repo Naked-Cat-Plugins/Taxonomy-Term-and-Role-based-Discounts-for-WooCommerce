@@ -2577,7 +2577,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		if ( $this->admin_ajax_secure_calls() ) {
 			// phpcs:disable WordPress.Security.NonceVerification.Missing
 			?>
-				<label for="tdw-form-add-term"><strong><?php esc_html_e( 'Term', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
+				<label for="tdw-form-add-term" id="tdw-form-add-term-label"><strong><?php esc_html_e( 'Term', 'taxonomy-discounts-woocommerce' ); ?></strong><span aria-hidden="true">:</span></label>
 				<br>
 				<?php
 				$taxonomy = isset( $_POST['taxonomy'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['taxonomy'] ) ) ) : '';
