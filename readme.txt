@@ -168,6 +168,10 @@ You can report any security bugs found in the source code of this plugin through
 == Changelog ==
 
 = TBA =
+**Thanks to Chris and Kim at [mysticaccess.com](https://mysticaccess.com/) for the accessibility tests**
+
+* [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.6: Accessibility: terms picked on the “Select multiple” term field could not be removed with a keyboard or a screen reader. Each selected term now has a real Remove button, with the removal announced and focus moved to the next term
+* [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.6: Accessibility: activating “Select multiple” dropped keyboard focus to the top of the page, and the term field lost its label once converted
 * [DEV] The term field’s label now has an `id`, so the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) can associate it with the enhanced multiple-terms field instead of adding the `id` itself with JavaScript
 
 = 8.5 - 2026-08-14 =
