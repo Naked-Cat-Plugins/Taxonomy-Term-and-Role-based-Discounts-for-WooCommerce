@@ -779,7 +779,14 @@ class WC_Taxonomy_Discounts_Webdados {
 		if ( $this->debug ) {
 			do_action( 'qm/start', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 		}
-		// if ( ( ! $force_calculation ) && $this->enable_cache && isset( $this->cache_on_get_price[$_product->get_id()] ) ) { // Causes double run on product archives??
+		if ( ! $force_calculation ) {
+			// Use a fresh product object to avoid compounding discounts from runtime-mutated cart instances.
+			$fresh_product = $_product->get_parent_id() ? new WC_Product_Variation( $_product->get_id() ) : new WC_Product( $_product->get_id() );
+			$fresh_price   = $fresh_product->get_price( 'edit' );
+			if ( is_numeric( $fresh_price ) ) {
+				$base_price = floatval( $fresh_price );
+			}
+		}
 		if ( $this->enable_cache && isset( $this->cache_on_get_price[ $_product->get_id() ] ) ) {
 			if ( $this->debug ) {
 				do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
