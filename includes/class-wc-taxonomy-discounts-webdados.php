@@ -1276,6 +1276,9 @@ class WC_Taxonomy_Discounts_Webdados {
 									&&
 									isset( $rule['type'] )
 									&&
+									// Skip rules whose type nothing can handle, as get_product_applied_rule() does for the catalog
+									$this->is_rule_type_handled( $rule['type'] )
+									&&
 									$this->has_term( $term_id, $rule['taxonomy'], $cart_item['product_id'] )
 									&&
 									! in_array( (int) $cart_item['product_id'], $this->cache_do_not_apply_discount, true ) // Fix on sale removal
