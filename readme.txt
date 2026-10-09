@@ -5,7 +5,7 @@ Tags: discount, bulk discount, category discount, role-based pricing, woocommerc
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 8.5
+Stable tag: 8.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -168,7 +168,7 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
-= TBA =
+= 8.6 - 2026-10-09 =
 **Thanks to Chris and Kim at [mysticaccess.com](https://mysticaccess.com/) for the accessibility tests**
 
 * [FIX] While the [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) was not active, a rule that needs it stopped lower priority rules from applying on the shop and product pages, while the cart still applied them
