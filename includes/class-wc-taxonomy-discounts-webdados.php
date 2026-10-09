@@ -1784,21 +1784,24 @@ class WC_Taxonomy_Discounts_Webdados {
 		// Check rules
 		if ( $product->has_child() ) {
 			$is_on_sale = false;
-			$prices     = $product->get_variation_prices();
-			if ( $prices['price'] !== $prices['regular_price'] ) {
-				$is_on_sale = true;
-			} else {
-				// Try testing with global product price - This may not be 100% accurate
-				$global_price = floatval( wc_format_decimal( $product->get_price(), wc_get_price_decimals() ) );
-				$min_price    = 0;
-				if ( $global_price > 0 ) {
-					foreach ( $prices['price'] as $temp_price ) {
-						if ( floatval( $temp_price ) < $min_price || floatval( $min_price ) === (float) 0 ) {
-							$min_price = floatval( $temp_price );
+			// Grouped products have no variation prices: WooCommerce already asked each child, and each child's answer came through this filter
+			if ( is_callable( array( $product, 'get_variation_prices' ) ) ) {
+				$prices = $product->get_variation_prices();
+				if ( $prices['price'] !== $prices['regular_price'] ) {
+					$is_on_sale = true;
+				} else {
+					// Try testing with global product price - This may not be 100% accurate
+					$global_price = floatval( wc_format_decimal( $product->get_price(), wc_get_price_decimals() ) );
+					$min_price    = 0;
+					if ( $global_price > 0 ) {
+						foreach ( $prices['price'] as $temp_price ) {
+							if ( floatval( $temp_price ) < $min_price || floatval( $min_price ) === (float) 0 ) {
+								$min_price = floatval( $temp_price );
+							}
 						}
-					}
-					if ( $global_price < $min_price ) {
-						$is_on_sale = true;
+						if ( $global_price < $min_price ) {
+							$is_on_sale = true;
+						}
 					}
 				}
 			}
