@@ -178,6 +178,7 @@ You can report any security bugs found in the source code of this plugin through
 * [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.6: Accessibility: terms picked on the “Select multiple” term field could not be removed with a keyboard or a screen reader. Each selected term now has a real Remove button, with the removal announced and focus moved to the next term
 * [FIX] [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) 6.6: Accessibility: activating “Select multiple” dropped keyboard focus to the top of the page, and the term field lost its label once converted
 * [DEV] Custom discount types must be registered through the `tdw_discount_types` filter no later than `after_setup_theme`, or their rules are skipped
+* [DEV] Tested up to WordPress 7.2-alpha-64245 and WooCommerce 11.2.0
 
 = 8.5 - 2026-08-14 =
 * [NEW] Accessibility improvements to the discount rules table and the add/edit rule forms: proper field labels, a table caption and skip-to-form link for screen readers, clearer validation and save/delete feedback, and screen reader announcements for dynamically-loaded fields
