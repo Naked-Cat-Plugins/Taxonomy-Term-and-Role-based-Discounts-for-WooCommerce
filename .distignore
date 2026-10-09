@@ -33,3 +33,7 @@ createzip.command
 # Other files specific to the plugin
 _todo.txt
 README.md
+
+# Tests
+tests/*
+tests

@@ -26,6 +26,7 @@ class WC_Taxonomy_Discounts_Webdados {
 	public $enable_cache;
 	public $get_price_filter;
 	public $get_price_filter_priority;
+	public $price_filter_paused;
 	public $enable_time;
 	public $wpml_active;
 	public $flatsome_active;
@@ -74,6 +75,7 @@ class WC_Taxonomy_Discounts_Webdados {
 		$this->enable_cache                = false;
 		$this->get_price_filter            = 'woocommerce_product_get_price';
 		$this->get_price_filter_priority   = 10;
+		$this->price_filter_paused         = false;
 		$this->enable_time                 = true; // Since 0.9
 		$this->wpml_active                 = class_exists( 'SitePress' );
 		$this->flatsome_active             = false;
@@ -514,6 +516,8 @@ class WC_Taxonomy_Discounts_Webdados {
 			// Rules database cache from PRO add-on
 			$discount_rules = apply_filters( 'tdw_discount_rules_database_cache', false );
 			if ( $frontend && ! empty( $discount_rules ) ) {
+				// The cache holds every rule, as the admin sees them, so leave out the ones the uncached path below does not load in the frontend
+				$discount_rules                = $this->get_frontend_discount_rules_from_cache( $discount_rules );
 				$this->discount_rules_frontend = $discount_rules;
 				if ( $this->debug ) {
 					do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::get_discount_rules' );
@@ -556,6 +560,10 @@ class WC_Taxonomy_Discounts_Webdados {
 							if ( $frontend && ! $term_meta_value['active'] ) {
 								continue;
 							}
+							// In the frontend do not load invalid/expired rules, before creating their priority and term entries, so no empty ones are left behind
+							if ( $frontend && ! $this->is_frontend_rule( $term_meta_value ) ) {
+								continue;
+							}
 							$term_meta_value['disable_coupon'] = isset( $term_meta_value['disable_coupon'] ) ? $term_meta_value['disable_coupon'] : false;
 							$term_meta_value['term_id']        = intval( $term->term_id );
 							$term_meta_value['meta_id']        = intval( $term_meta_1->meta_id );
@@ -571,12 +579,6 @@ class WC_Taxonomy_Discounts_Webdados {
 								}
 								if ( ! isset( $discount_rules[ $term_meta_value['priority'] ][ $term->term_id ] ) ) {
 									$discount_rules[ $term_meta_value['priority'] ][ $term->term_id ] = array();
-								}
-								// In the frontend do not load invalid/expired rules
-								if ( $frontend ) {
-									if ( ! ( WC_Taxonomy_Discounts_Webdados()->valid_rule_user_role( $term_meta_value ) && WC_Taxonomy_Discounts_Webdados()->valid_rule_date( $term_meta_value ) ) ) {
-										continue;
-									}
 								}
 								// Add to current discount rules for performance reasons
 								++$count_rules;
@@ -612,6 +614,45 @@ class WC_Taxonomy_Discounts_Webdados {
 			do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::get_discount_rules' );
 		}
 		return $frontend ? $this->discount_rules_frontend : $this->discount_rules_backend;
+	}
+
+	/**
+	 * Should this rule be loaded in the frontend?
+	 *
+	 * Active, within its dates and for the current user's role
+	 *
+	 * @param array $rule The discount rule.
+	 * @return bool
+	 */
+	private function is_frontend_rule( $rule ) {
+		return ! empty( $rule['active'] ) && $this->valid_rule_user_role( $rule ) && $this->valid_rule_date( $rule );
+	}
+
+	/**
+	 * Frontend view of the rules database cache
+	 *
+	 * Leaves out the rules that should not be loaded in the frontend, and the priorities and terms left without rules
+	 *
+	 * @param array $discount_rules Multi-dimensional array of discount rules organized by priority and term ID.
+	 * @return array
+	 */
+	private function get_frontend_discount_rules_from_cache( $discount_rules ) {
+		foreach ( $discount_rules as $priority => $rules_by_term ) {
+			foreach ( (array) $rules_by_term as $term_id => $rules ) {
+				foreach ( (array) $rules as $key => $rule ) {
+					if ( ! is_array( $rule ) || ! $this->is_frontend_rule( $rule ) ) {
+						unset( $discount_rules[ $priority ][ $term_id ][ $key ] );
+					}
+				}
+				if ( empty( $discount_rules[ $priority ][ $term_id ] ) ) {
+					unset( $discount_rules[ $priority ][ $term_id ] );
+				}
+			}
+			if ( empty( $discount_rules[ $priority ] ) ) {
+				unset( $discount_rules[ $priority ] );
+			}
+		}
+		return $discount_rules;
 	}
 
 	/**
@@ -894,16 +935,22 @@ class WC_Taxonomy_Discounts_Webdados {
 	 * @return float                        The discounted price or original price if no discount applies.
 	 */
 	public function on_get_price( $base_price, $_product, $force_calculation = false, $qty = 1 ) {
+		// Paused while we price something ourselves, so the price goes through untouched but we keep our place on the hook
+		if ( $this->price_filter_paused && ! $force_calculation ) {
+			return $base_price;
+		}
+		// The incoming price is part of the key: another price filter may run before us and change it
+		$cache_key = $this->get_cache_on_get_price_key( $_product, $base_price, $qty );
 		if ( $this->debug ) {
 			do_action( 'qm/start', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 		}
 		// if ( ( ! $force_calculation ) && $this->enable_cache && isset( $this->cache_on_get_price[$_product->get_id()] ) ) { // Causes double run on product archives??
-		if ( $this->enable_cache && isset( $this->cache_on_get_price[ $_product->get_id() ] ) ) {
+		if ( $this->enable_cache && isset( $this->cache_on_get_price[ $cache_key ] ) ) {
 			if ( $this->debug ) {
 				do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 			}
 			// Issue #7 (PRO) happens here
-			return $this->cache_on_get_price[ $_product->get_id() ];
+			return $this->cache_on_get_price[ $cache_key ];
 		}
 		if ( is_numeric( $base_price ) ) {
 			$composite_ajax = did_action( 'wp_ajax_woocommerce_show_composited_product' ) || did_action( 'wp_ajax_nopriv_woocommerce_show_composited_product' ) || did_action( 'wc_ajax_woocommerce_show_composited_product' );
@@ -945,7 +992,7 @@ class WC_Taxonomy_Discounts_Webdados {
 				// Fix checkout ajax - https://wordpress.org/support/topic/no-passo-de-finalizar-encomenda-os-valores-estao-errados/
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				if ( is_ajax() && isset( $_GET['wc-ajax'] ) && 'update_order_review' === trim( sanitize_text_field( wp_unslash( $_GET['wc-ajax'] ) ) ) ) {
-					$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+					$this->cache_on_get_price[ $cache_key ] = $base_price;
 					if ( $this->debug ) {
 						do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 					}
@@ -983,8 +1030,8 @@ class WC_Taxonomy_Discounts_Webdados {
 										$discount_price              = $base_price - ( $base_price * ( floatval( $rule['value'] ) / 100 ) );
 										$discount_price_over_regular = (float) $_product->get_regular_price() - ( (float) $_product->get_regular_price() * ( floatval( $rule['value'] ) / 100 ) );
 										if ( apply_filters( 'tdw_recheck_get_product_applied_rule', true, $rule, $product_id, $product_id_base, $base_price, $discount_price, $_product->get_regular_price(), $discount_price_over_regular ) ) {
-											$discount_price                                  = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
-											$this->cache_on_get_price[ $_product->get_id() ] = $discount_price;
+											$discount_price                         = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
+											$this->cache_on_get_price[ $cache_key ] = $discount_price;
 											if ( $this->debug ) {
 												do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 											}
@@ -1003,8 +1050,8 @@ class WC_Taxonomy_Discounts_Webdados {
 									$discount_price              = ( ( $base_price * $qty ) - ( $base_price * $qtt_discounted ) ) / $qty;
 									$discount_price_over_regular = ( ( (float) $_product->get_regular_price() * $qty ) - ( (float) $_product->get_regular_price() * $qtt_discounted ) ) / $qty;
 									if ( apply_filters( 'tdw_recheck_get_product_applied_rule', true, $rule, $product_id, $product_id_base, $base_price, $discount_price, $_product->get_regular_price(), $discount_price_over_regular ) ) {
-										$discount_price                                  = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
-										$this->cache_on_get_price[ $_product->get_id() ] = $discount_price;
+										$discount_price                         = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
+										$this->cache_on_get_price[ $cache_key ] = $discount_price;
 										if ( $this->debug ) {
 											do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 										}
@@ -1021,8 +1068,8 @@ class WC_Taxonomy_Discounts_Webdados {
 									$discount_price              = $non_default_discount_price['discount_price'];
 									$discount_price_over_regular = $non_default_discount_price['discount_price_over_regular'];
 									if ( apply_filters( 'tdw_recheck_get_product_applied_rule', true, $rule, $product_id, $product_id_base, $base_price, $discount_price, $_product->get_regular_price(), $discount_price_over_regular ) ) {
-										$discount_price                                  = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
-										$this->cache_on_get_price[ $_product->get_id() ] = $discount_price;
+										$discount_price                         = apply_filters( 'tdw_on_get_price_discount_price', $discount_price, $discount_price_over_regular, $_product, $rule );
+										$this->cache_on_get_price[ $cache_key ] = $discount_price;
 										if ( $this->debug ) {
 											do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 										}
@@ -1035,14 +1082,14 @@ class WC_Taxonomy_Discounts_Webdados {
 						}
 					}
 					// We're caching here because we know that we have run the rules and they do not apply, so we won't need to run them again for this product on this page load
-					$this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+					$this->cache_on_get_price[ $cache_key ] = $base_price;
 					if ( $this->debug ) {
 						do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 					}
 					return $base_price;
 				} else {
 					// No rules - We should not cache if we're not touching the price
-					// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+					// $this->cache_on_get_price[ $cache_key ] = $base_price;
 					if ( $this->debug ) {
 						do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 					}
@@ -1050,7 +1097,7 @@ class WC_Taxonomy_Discounts_Webdados {
 				}
 			} else {
 				// Conditions do not apply - Issue #7 (PRO) happens here - We should not cache if we're not touching the price
-				// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+				// $this->cache_on_get_price[ $cache_key ] = $base_price;
 				if ( $this->debug ) {
 					do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 				}
@@ -1058,12 +1105,27 @@ class WC_Taxonomy_Discounts_Webdados {
 			}
 		} else {
 			// Not numberic - We should not cache if we're not touching the price
-			// $this->cache_on_get_price[ $_product->get_id() ] = $base_price;
+			// $this->cache_on_get_price[ $cache_key ] = $base_price;
 			if ( $this->debug ) {
 				do_action( 'qm/stop', 'WC_Taxonomy_Discounts_Webdados::on_get_price - ' . $_product->get_id() . ' - ' . ( $force_calculation ? 'forced' : '' ) );
 			}
 			return $base_price;
 		}
+	}
+
+	/**
+	 * Key for the per-request catalog price cache
+	 *
+	 * Includes the incoming price and the quantity, so a cached result is only ever returned for the
+	 * same input, whatever other price filters ran before us
+	 *
+	 * @param WC_Product $_product   The product object.
+	 * @param mixed      $base_price The price we were given.
+	 * @param int        $qty        Product quantity.
+	 * @return string
+	 */
+	private function get_cache_on_get_price_key( $_product, $base_price, $qty ) {
+		return $_product->get_id() . '|' . ( is_scalar( $base_price ) ? (string) $base_price : '' ) . '|' . $qty;
 	}
 
 	/**
@@ -1096,26 +1158,29 @@ class WC_Taxonomy_Discounts_Webdados {
 	}
 
 	/**
-	 * Remove price filters before cart calculations
+	 * Pause price filters before cart calculations
 	 *
-	 * Temporarily removes price filters to prevent duplicate discount application during cart operations
+	 * Temporarily pauses the catalog price filter to prevent duplicate discount application during cart operations.
+	 * It is paused rather than removed, because removing and adding it back would move it behind any other callback on the same priority.
 	 *
 	 * @param WC_Cart $cart The cart object.
 	 */
 	public function cart_remove_price_filters( $cart ) {
 		if ( is_object( $cart ) ) {
 			if ( ! $cart->is_empty() ) {
-				remove_filter( $this->get_price_filter, array( &$this, 'on_get_price' ), $this->get_price_filter_priority, 2 );
+				$this->price_filter_paused = true;
 			}
 		}
 	}
 
 	/**
-	 * Re-add price filters after cart calculations
+	 * Resume price filters after cart calculations
 	 *
-	 * Restores price filters that were temporarily removed during cart operations
+	 * Resumes the catalog price filter paused during cart operations.
+	 * Adding a filter that is already hooked leaves it where it is, so this only puts it back if something else removed it.
 	 */
 	public function cart_add_price_filters() {
+		$this->price_filter_paused = false;
 		add_filter( $this->get_price_filter, array( &$this, 'on_get_price' ), $this->get_price_filter_priority, 2 );
 	}
 
@@ -1738,10 +1803,12 @@ class WC_Taxonomy_Discounts_Webdados {
 				}
 			}
 		} else {
-			// We remove and re-add the filter to avoid a duplicate call that we're not sure why happens, but applies the discount twice and we might get incorrect "on sale" results if the price goes to zero
-			remove_filter( $this->get_price_filter, array( &$this, 'on_get_price' ), $this->get_price_filter_priority, 2 );
-			$discount_price = self::on_get_price( wc_format_decimal( $product->get_price(), wc_get_price_decimals() ), $product, true );
-			add_filter( $this->get_price_filter, array( &$this, 'on_get_price' ), $this->get_price_filter_priority, 2 );
+			// We pause the filter so get_price() does not apply the discount before we apply it again, which would give incorrect "on sale" results if the price goes to zero
+			// Paused rather than removed and re-added, which would move it behind any other callback on the same priority
+			$was_paused                = $this->price_filter_paused;
+			$this->price_filter_paused = true;
+			$discount_price            = self::on_get_price( wc_format_decimal( $product->get_price(), wc_get_price_decimals() ), $product, true );
+			$this->price_filter_paused = $was_paused;
 			if ( $this->debug ) {
 				do_action( 'qm/lap', 'WC_Taxonomy_Discounts_Webdados::on_get_product_is_on_sale - ' . $product->get_id() );
 			}
