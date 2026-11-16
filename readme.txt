@@ -9,7 +9,7 @@ Stable tag: 8.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Automatically apply WooCommerce discounts/pricing rules based on product category, tag, attribute, custom taxonomy, and user role — no coupons needed
+Automatically apply WooCommerce discounts/pricing rules based on product category, tag, attribute, custom taxonomy, and user role, with no coupons needed
 
 == Description ==
 
@@ -43,7 +43,7 @@ Each discount rule can have a start and end date.
 * Show discount information for non-taxonomy discounts (set by product sale price), including start and end date, thus allowing compliance with legislation, such as Portuguese law, which requires these details to be displayed next to the sale price;
 * “Stop - no discount” rule that makes sure products from specific taxonomy terms never have a discount applied, even if there are other rules that will apply for other product taxonomy terms;
 * Exclude products already on sale from the discount rule: always, or if taxonomy discount is lower, or if taxonomy discount is higher;
-* Set base price for on-sale products: sale price (discount on top of discount) or original regular price (new option);
+* Set base price for on-sale products: sale price (discount on top of discount) or original regular price;
 * Disable shipping methods based on cart items applied rules;
 * Set discount rules for non-logged-in users;
 * [Google Product Feed for WooCommerce](https://automattic.pxf.io/EEJQd4) integration
@@ -58,7 +58,7 @@ Each discount rule can have a start and end date.
 * Only one rule is applied per cart line, so setting the priorities correctly is very important;
 * When aggregating product variations, the quantity will be the sum of the quantities of all the variations of the same product in the cart, and the discount will be applied to all of them;
 * For WPML users, if you want the same discounts to apply to all the languages, you must replicate the rules for each of the translations of the terms
-* You can use the `tdw_rule_add`, `tdw_rule_edit`, and `tdw_rule_delete` actions when adding, editing, and deleting rules, to do whatever you want, like, for example, clearing cache ([check out to use them here](https://gist.github.com/webdados/98282475fbee2be347eba45ad81cbba5) and send us cool examples of what you’ve done)
+* You can use the `tdw_rule_add`, `tdw_rule_edit`, and `tdw_rule_delete` actions when adding, editing, and deleting rules, to do whatever you want, like, for example, clearing cache ([check out how to use them here](https://gist.github.com/webdados/98282475fbee2be347eba45ad81cbba5) and send us cool examples of what you’ve done)
 
 = Other (premium) plugins =
 
@@ -69,7 +69,7 @@ Already know our other WooCommerce (premium) plugins?
 * [Simple Checkout Fields Manager for WooCommerce](https://nakedcatplugins.com/product/simple-custom-fields-for-woocommerce-blocks-checkout/) - Add custom fields and manage (remove, make required or optional) core fields on the new WooCommerce Block-based Checkout
 * [Simple WooCommerce Order Approval](https://nakedcatplugins.com/product/simple-woocommerce-order-approval/) - The hassle-free solution for WooCommerce order approval before payment
 * [Shop as Client for WooCommerce](https://nakedcatplugins.com/product/shop-as-client-for-woocommerce-pro-add-on/) - Quickly create orders on behalf of your customers
-* [DPD / SEUR / Geopost Pickup and Lockers network for WooCommerce](https://nakedcatplugins.com/product/dpd-seur-geopost-pickup-and-lockers-network-for-woocommerce/) - Deliver your WooCommerce orders on the DPD and SEUR Pickup network of Parcelshops and Lockers in 21 European countries
+* [DPD / Geopost Pickup and Lockers network for WooCommerce](https://nakedcatplugins.com/product/dpd-seur-geopost-pickup-and-lockers-network-for-woocommerce/) - Deliver your WooCommerce orders on the DPD, Chronopost, BRT, SEUR and PostNord Pickup network of Parcelshops and Lockers in 25 European countries
 
 
 Banner by [Arno Senoner](https://unsplash.com/@arnosenoner?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
@@ -84,7 +84,7 @@ Banner by [Arno Senoner](https://unsplash.com/@arnosenoner?utm_source=unsplash&u
 
 = Does this plugin apply discounts automatically without coupons? =
 
-Yes. Discounts are applied automatically at cart/checkout based on the product’s taxonomy terms and the customer’s user role — no coupon code is required.
+Yes. Discounts are applied automatically at cart/checkout based on the product’s taxonomy terms and the customer’s user role. No coupon code is required.
 
 = Can I set bulk discounts or quantity-based pricing in WooCommerce? =
 
@@ -129,11 +129,11 @@ This is still beta.
 
 No. The way we store cart item prices is not currently compatible with stores that allow customers to change currency during the shopping session.
 
-= Is this plugin compatible with the new WooCommerce High-Performance Order Storage? =
+= Is this plugin compatible with WooCommerce High-Performance Order Storage? =
 
 Yes.
 
-= Is this plugin compatible with the new WooCommerce block-based Cart and Checkout? =
+= Is this plugin compatible with the WooCommerce block-based Cart and Checkout? =
 
 Yes.
 
