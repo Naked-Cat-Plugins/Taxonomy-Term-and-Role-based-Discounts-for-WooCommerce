@@ -30,6 +30,7 @@ Each discount rule can have a start and end date.
 * Percentage: apply an absolute percentage discount to all the products on a specific taxonomy term;
 * Buy x get y free (BOGO): offer free items when a minimum quantity is purchased;
 * [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) Fixed value: apply an absolute value discount to all the products on a specific taxonomy term;
+* [PRO add-on](https://nakedcatplugins.com/product/taxonomy-term-and-role-based-discounts-for-woocommerce-pro-add-on/?utm_source=wordpress.org&utm_medium=link&utm_campaign=taxonomydiscounts_woocommerce_plugin) Percentage (first subscription payment): apply a percentage discount to the first payment of a WooCommerce Subscriptions product only, with renewals charged at the regular price;
 
 = Get more with the PRO add-on =
 
