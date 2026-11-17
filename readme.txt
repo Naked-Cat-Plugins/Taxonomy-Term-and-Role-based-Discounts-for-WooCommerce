@@ -54,7 +54,7 @@ Each discount rule can have a start and end date.
 
 = Notes =
 
-* The discounts are applied on a “per cart line” basis (not to the sum of the products of the same taxonomy) - this means that if you set a discount with a minimum quantity, it will only be applied if the customer buys that quantity of the same product;
+* The discounts are applied on a “per cart line” basis (not to the sum of the products of the same taxonomy): this means that if you set a discount with a minimum quantity, it will only be applied if the customer buys that quantity of the same product;
 * Only one rule is applied per cart line, so setting the priorities correctly is very important;
 * When aggregating product variations, the quantity will be the sum of the quantities of all the variations of the same product in the cart, and the discount will be applied to all of them;
 * For WPML users, if you want the same discounts to apply to all the languages, you must replicate the rules for each of the translations of the terms
