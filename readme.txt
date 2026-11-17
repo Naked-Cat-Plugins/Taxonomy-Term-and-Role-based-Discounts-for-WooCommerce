@@ -156,7 +156,7 @@ Sure. Go to [GlotPress](https://translate.wordpress.org/projects/wp-plugins/taxo
 
 = Where do I report security vulnerabilities found in this plugin? =  
  
-You can report any security bugs found in the source code of this plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/taxonomy-discounts-woocommerce). The Patchstack team will assist you with verification, CVE assignment and take care of notifying the developers of this plugin.
+You can report any security bugs found in the source code of this plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/9e5fbb56-12d8-470b-bd88-5cd3fa34ba7c). The Patchstack team will assist you with verification, CVE assignment and take care of notifying the developers of this plugin.
 
 == Screenshots ==
 
