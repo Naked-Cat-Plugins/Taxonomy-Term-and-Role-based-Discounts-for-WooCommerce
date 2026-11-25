@@ -169,6 +169,9 @@ You can report any security bugs found in the source code of this plugin through
 
 == Changelog ==
 
+= TBA =
+* [FIX] The settings page opens by itself only when you activate the plugin alone in the WordPress admin. Activating it with WP-CLI no longer cancels the next WP-CLI plugin command
+
 = 8.6 - 2026-10-09 =
 **Thanks to Chris and Kim at [mysticaccess.com](https://mysticaccess.com/) for the accessibility tests**
 

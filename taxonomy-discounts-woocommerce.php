@@ -67,7 +67,10 @@ function wctd_init_no_woocommerce() {
  * On activation, set a transient so we can redirect to the settings page.
  */
 function wctd_redirect_on_activation() {
-	set_transient( 'wctd_activation_redirect_' . get_current_user_id(), true, 30 );
+	// Only when activated alone in wp-admin: never with WP-CLI, the REST API or a bulk activation.
+	if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) && is_admin() && ! isset( $_REQUEST['checked'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		set_transient( 'wctd_activation_redirect_' . get_current_user_id(), true, 30 );
+	}
 }
 register_activation_hook( __FILE__, 'wctd_redirect_on_activation' );
 
@@ -77,8 +80,8 @@ register_activation_hook( __FILE__, 'wctd_redirect_on_activation' );
 add_action(
 	'admin_init',
 	function () {
-		// Do not redirect during AJAX requests.
-		if ( wp_doing_ajax() ) {
+		// Do not redirect during AJAX requests or WP-CLI commands.
+		if ( wp_doing_ajax() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 		$transient_key = 'wctd_activation_redirect_' . get_current_user_id();
